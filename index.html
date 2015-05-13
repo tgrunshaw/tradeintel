@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Tradeintel by tgrunshaw</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Tradeintel</h1>
+          <h2>A repository of some of the code written for the startup, TradeIntel. </h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/tgrunshaw/tradeintel/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/tgrunshaw/tradeintel/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/tgrunshaw/tradeintel" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h3>
+<a id="welcome-to-the-tradeintel-demonstration-repository" class="anchor" href="#welcome-to-the-tradeintel-demonstration-repository" aria-hidden="true"><span class="octicon octicon-link"></span></a>Welcome to the TradeIntel demonstration repository!</h3>
+
+<p>Feel free to jump straight into viewing the code or read below for a bit of background &amp; guidance. This repository is a small selection of the code written for TradeIntel - enough to show my coding background to potential employers / peers, but without having the codebase open source.  </p>
+
+<h2>
+<a id="background" class="anchor" href="#background" aria-hidden="true"><span class="octicon octicon-link"></span></a>Background</h2>
+
+<p>TradeIntel was a startup that Kevin Doran, myself, and later Finn Lawrence worked on for ~3 years. TradeIntel won several awards, was selected and participated in a startup accelerator, and most importantly began to show promising customer usage. However, due to legal/business reasons rather than technical reasons, we decided to move on from TradeIntel in 2014.</p>
+
+<h2>
+<a id="technical-overview" class="anchor" href="#technical-overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Technical overview</h2>
+
+<p>TradeIntel was a SaaS product built entirely using Java EE 6/7 entirely by Kevin Doran and msyelf. At a very high level it had two parts: </p>
+
+<ul>
+<li>Part A obtained data from a third party using an API, then stored this data using Percona Server in a ~50GB database. Besides communicating in a resilient, RESTful, and rate-limited manner, this part was also responsible for reliable XML--&gt;Java--&gt;MySQL storage, background database hot replication, automatic class generation using Jaxb, and version controlled database migration using Flyway. </li>
+<li>Part B exposed this large amount of complex data to (authenticated) website users in a simple and explanatory way, using techniques that were scalable. </li>
+</ul>
+
+<h2>
+<a id="technical-examples" class="anchor" href="#technical-examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Technical Examples</h2>
+
+<p>Below are a selection of code segments with corresponding explanations. </p>
+
+<h3>
+<a id="concurrent-resilient-aggregation-and-persistence-of-auction-listings" class="anchor" href="#concurrent-resilient-aggregation-and-persistence-of-auction-listings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Concurrent, resilient aggregation, and persistence of auction listings</h3>
+
+<p><a href="https://github.com/tgrunshaw/tradeintel/blob/master/tradeintel_listingretriever/tradeintel_listingretriever_ejb/src/main/java/nz/co/tradeintel/listingretriever/databaseupdater/ListingDetailUpdaterBean.java">This singleton</a> is responsible for delegating auctions to <a href="https://github.com/tgrunshaw/tradeintel/blob/master/tradeintel_listingretriever/tradeintel_listingretriever_ejb/src/main/java/nz/co/tradeintel/listingretriever/databaseupdater/ListingDetailUpdaterMessageBean.java">this message bean</a> (using JMS) which in turns uses the API caller functionality to request auction XML, parse to java, and persist in the database. A pool size of 20 message driven beans were used to concurrently do this, allowing us to overcome the network latency which would have otherwise caused the process to be too slow.  </p>
+
+<h3>
+<a id="concurrent-and-encapsulated-selection-of-api-tokens-from-database" class="anchor" href="#concurrent-and-encapsulated-selection-of-api-tokens-from-database" aria-hidden="true"><span class="octicon octicon-link"></span></a>Concurrent and encapsulated selection of API tokens from database</h3>
+
+<p><a href="https://github.com/tgrunshaw/tradeintel/blob/master/tradeintel_listingretriever/tradeintel_apicredentials_ejb/src/main/java/nz/co/tradeintel/trademe/TradeMeApiCallerBean.java">This class</a> using <a href="https://github.com/tgrunshaw/tradeintel/blob/master/tradeintel_listingretriever/tradeintel_apicredentials_ejb/src/main/java/nz/co/tradeintel/trademe/oauth/TradeMeApiCredentialsConcurrentBean.java">this class</a> (local interface <a href="https://github.com/tgrunshaw/tradeintel/blob/master/tradeintel_listingretriever/tradeintel_apicredentials_ejb/src/main/java/nz/co/tradeintel/trademe/oauth/TradeMeApiCredentialsConcurrentBeanLocal.java">here</a>) provides a thread-safe mechanism to make API requests using a specific set of tokens, without ever using a token more than allowed (tokens are rate-limited per hour with a penalty for overuse). </p>
+
+<h3>
+<a id="api-request-functionality" class="anchor" href="#api-request-functionality" aria-hidden="true"><span class="octicon octicon-link"></span></a>API request functionality</h3>
+
+<p><img src="http://googledrive.com/host/0B8QP06llzL19SVoyb2dZTkJLTW8/2000px-ApiRequestArchitecture.png" alt=""></p>
+
+<h3>
+<a id="python-scripts--java-reflection" class="anchor" href="#python-scripts--java-reflection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Python scripts &amp; java reflection</h3>
+
+<p>We wanted to automate the generation of java classes from the provided XML schema (on every mvn package command) so we used a python script for this [?????]. We only wanted the java classes we use (there were 1000's otherwise), to find used classes I wrote a (probably over complicated) class that cleverly used reflection to identify these classes [?????].  </p>
+        </section>
+
+        <footer>
+          Tradeintel is maintained by <a href="https://github.com/tgrunshaw">tgrunshaw</a><br>
+          This page was generated by <a href="https://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
