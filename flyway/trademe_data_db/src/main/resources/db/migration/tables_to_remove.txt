@@ -1,0 +1,9 @@
+@10.10.13
+@V1.0.1
+From the eclipseLink generated script, I removed:
+item (and FK constrains)
+item_attribute
+item_openhome
+company
+sequence
+--------------------

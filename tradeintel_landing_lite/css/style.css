@@ -1,0 +1,279 @@
+
+.logo {
+	height: 50px;
+}
+
+@media(max-width:768px) {
+	.hero img.logo {
+		width: 60%;
+		height: auto;
+	}
+}
+
+.hero .logo {
+	height: 10em;
+	margin-bottom: 2em;
+}
+.frame  img {
+	height: 1em;
+}
+
+@media (max-width: 991px) {
+    .nav>li:nth-child(odd){display:none};
+}
+
+@media (min-width:992px){
+    .nav {
+        float: right;
+    }
+}
+
+@media (min-width:992px) {
+    .mini-image {
+		display: none;
+    }
+
+    .maxi-image {
+		display: block;
+    }
+
+    .nav>li>form>input {
+		margin-right: 10px;
+    }
+}
+
+@media (max-width:991px){
+
+    .nav>li>form>input {
+		width: 80%;
+		max-width: 300px;
+		margin: auto;
+		margin-bottom: 10px;
+    }
+
+    .mini-image {
+		display: inline-block;
+		float: left;
+    }
+
+    body > div.h2 {
+		display: inline-block;
+    }
+
+    .maxi-image {
+		display: none;
+    }
+}
+
+.navbar-inner {
+    margin: auto;
+}
+
+.body {
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+.hero, .jumbotron {
+    background-color: #CECED0;
+}
+
+.jumbotron {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.feature {
+    padding-top: 50px;
+    padding-bottom: 5px;
+}
+
+.center.navbar {
+    padding: 10px 10px;
+}
+
+.center .navbar-inner {
+    text-align:center;
+}
+.center .dropdown-menu {
+    text-align: left;
+}
+
+.navbar.center {
+    background-image: url('../img/blurgrey.png');
+    background-repeat: repeat;
+    margin-bottom: 0px;
+    border-radius: 0px;
+}
+
+.navbar a {
+    color: #ceced0;
+}
+.navbar li a:hover,
+.navbar li a:focus {
+    background-color: #ceced0;
+    text-shadow: 2px 2px ceced0;
+    color: #323232
+}
+
+.nav>li>img {
+    height: 15px;
+}
+
+.navbar-collapse {
+    overflow: hidden;
+}
+
+.frame {
+    height: 100%;      
+    text-align: center; 
+    margin: 1em 0;
+}
+
+.frame2 {
+    height: 100%;      
+    text-align: center; 
+    margin: auto;
+}
+
+.helper {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    margin: auto
+}
+
+.body > div.navbar.center > div > div > div.navbar-collapse.collapse > ul > li > a {
+    height: 15px;
+}
+
+.mini-image {
+    height: 10%;
+    width: 10%;
+    max-height: 50px;
+    max-width: 50px;
+    min-height: 30px;
+    min-width: 30px;
+    margin-right: 5px;
+}
+
+.icon-bar {
+    background-color: #ceced0;
+}
+
+.container-fluid {
+    width: 100%;
+}
+
+.call-to-action > a {
+    font-size: 3em;
+}
+
+.big-button {
+    margin-top: 20px;
+	margin-bottom: 2em;
+    font-size: 2em;
+	font-variant: small-caps;
+}
+
+/** Tree.html **/
+.info-box {
+	border: 2px solid black;
+	border-radius: 6px;
+}
+.tree {
+	padding-left: 20px;
+}
+.market-head {
+	background-color: #CECED0;
+	padding-top: 30px;
+	padding-bottom: 30px;
+	margin-bottom: 30px;
+}
+#tree-report {
+	min-height: 200px;
+}
+/** end **/
+
+.landing-form > input {
+    margin: 10px;
+    margin-left: 0px;
+}
+.landing-form {
+    margin: auto;
+}
+
+
+.second-header {
+    /* url("/javax.faces.resource/fullSmaller.jpg.xhtml?ln=images")
+    /*background-image: url("/javax.faces.resource/fullScaled.jpg.xhtml?ln=images");*/
+    background-image: url('../img/blur.jpg');
+    background-repeat: repeat;
+	padding-bottom: 2em;
+	padding-top: 2em;
+}
+
+.tree-report .name {
+	display: inline-block;
+	font-weight: bold;
+	text-transform: capitalize;
+}
+
+.tree-report .row {
+	margin-bottom: 1.5em;
+}
+
+.order-column {
+	padding-left: 2em;
+}
+
+.row .order-row {
+	text-align: center;
+	margin-bottom: 0;
+}
+
+ .no-obligation, .sample-request {
+	font-size: 80%;
+	margin-top: 0.5em;
+	margin-bottom: 0;
+}
+
+.tree-report {
+	padding-left: 3em;
+}
+
+.divider {
+	color: #31b0d5;
+}
+
+address {
+	font-style: italic;
+}
+
+.contact h3 {
+	margin-top: 1.5em;
+}
+
+.medal {
+	font-size: 120%;
+}
+
+.medal  {
+	font-variant: small-caps;
+	font-size: 120%;
+	border-radius: 5px;
+	color: black;
+	padding: .3em;
+	font-weight: bold;
+	border: solid 1px;
+}
+.medal.gold {
+	background-color: #f7ecb5;
+}
+
+.medal.bronze {
+	background-color: #c0a16b;
+}
+
+.medal.silver {
+	background-color: #ceced0;
+}

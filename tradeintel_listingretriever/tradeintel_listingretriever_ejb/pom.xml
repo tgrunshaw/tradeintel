@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>tradeintel_listingretriever</artifactId>
+        <groupId>nz.co.tradeintel</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>nz.co.tradeintel</groupId>
+    <artifactId>tradeintel_listingretriever_ejb</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>ejb</packaging>
+
+    <name>tradeintel_listingretriever_ejb</name>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>1.1.1.Final</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>   
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>nz.co.tradeintel</groupId>
+            <artifactId>tradeintel_trademe</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>nz.co.tradeintel</groupId>
+            <artifactId>tradeintel_listingretriever_interface</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>nz.co.tradeintel</groupId>
+            <artifactId>tradeintel_apicredentials_interface</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <artifactId>solr-solrj</artifactId>
+            <groupId>org.apache.solr</groupId>
+            <!-- 
+            Upgrading to version 4.4.0 will cause a 
+            "Java.Io.IOException: Keystore Was Tampered With, Or Password Was Incorrect"
+            exception on ListingRetriever 'test'. This wasn't investigated, so good luck!
+            4.4.0 did have a lot of changes from 4.0.0 
+            -->
+            <version>4.0.0</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <!--
+        <dependency>
+            Include this to remove the 
+            "SEVERE: SLF4J: Defaulting to no-operation (NOP) logger implementation"
+            messages. But by doing so, you will also want to include a configuration
+            to only log WARNING (default INFO) messages, and/or change the default
+            output from std.err (as every log appears as SEVERE). 
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.5</version>
+        </dependency>
+        -->
+        <dependency>
+            <!--  
+            Needed by httpSolrServer (apache httpClient thingy) (valid 16.10.13).
+            -->
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>2.5.1</version>
+            <type>jar</type>
+        </dependency>
+        <!-- Arquillian Test Method -->
+<!--        <dependency>
+            <groupId>org.jboss.spec</groupId>
+            <artifactId>jboss-javaee-6.0</artifactId>
+            <version>1.0.0.Final</version>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>-->
+        <dependency>  
+            <groupId>org.jboss.spec.javax.annotation</groupId>  
+            <artifactId>jboss-annotations-api_1.1_spec</artifactId>  
+            <version>1.0.0.Final</version>  
+            <scope>provided</scope>  
+        </dependency>  
+        <dependency>  
+            <groupId>org.jboss.spec.javax.ejb</groupId>  
+            <artifactId>jboss-ejb-api_3.1_spec</artifactId>  
+            <version>1.0.0.Final</version>  
+            <scope>provided</scope>  
+        </dependency>  
+        <dependency>  
+            <groupId>javax.enterprise</groupId>  
+            <artifactId>cdi-api</artifactId>  
+            <scope>provided</scope>  
+            <version>1.0</version>  
+        </dependency>  
+        <dependency>  
+            <groupId>com.sun.faces</groupId>  
+            <artifactId>jsf-api</artifactId>  
+            <version>2.0.3-b05</version>  
+            <scope>provided</scope>  
+        </dependency>  
+        <dependency>  
+            <groupId>javax.validation</groupId>  
+            <artifactId>validation-api</artifactId>  
+            <version>1.0.0.GA</version>  
+            <scope>provided</scope>  
+        </dependency>  
+        <dependency>  
+            <groupId>org.hibernate.javax.persistence</groupId>  
+            <artifactId>hibernate-jpa-2.0-api</artifactId>  
+            <version>1.0.0.Final</version>  
+            <scope>provided</scope>  
+        </dependency>          
+        
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <version>1.1.1.Final</version>
+            <scope>test</scope>
+        </dependency>         
+    </dependencies>
+    <profiles>
+        <profile>
+            <id>glassfish-embedded-3.1</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>            
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-glassfish-embedded-3.1</artifactId>
+                    <version>1.0.0.CR4</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.glassfish.main.extras</groupId>
+                    <artifactId>glassfish-embedded-all</artifactId>
+                    <scope>test</scope>
+                    <version>3.1.2.2</version>
+                </dependency>
+            </dependencies>
+            <build>
+                <testResources>
+                    <testResource>
+                        <directory>src/test/resources</directory>
+                    </testResource>
+                    <testResource>
+                        <directory>src/test/resources-glassfish-embedded</directory>
+                    </testResource>
+                </testResources>
+                  <plugins>  
+                    <plugin>  
+                        <groupId>org.apache.maven.plugins</groupId>  
+                        <artifactId>maven-surefire-plugin</artifactId>  
+                        <version>2.8</version>  
+                        <configuration>  
+                            <classpathDependencyExcludes>  
+                                <classpathDependencyExcludes>org.jboss.spec.javax.annotation:jboss-annotations-api_1.1_spec</classpathDependencyExcludes>  
+                                <classpathDependencyExcludes>org.jboss.spec.javax.ejb:jboss-ejb-api_3.1_spec</classpathDependencyExcludes>  
+                                <classpathDependencyExcludes>javax.enterprise:cdi-api</classpathDependencyExcludes>  
+                                <classpathDependencyExcludes>com.sun.faces:jsf-api</classpathDependencyExcludes>  
+                                <classpathDependencyExcludes>javax.validation:validation-api</classpathDependencyExcludes>  
+                                <classpathDependencyExcludes>org.hibernate.javax.persistence:hibernate-jpa-2.0-api</classpathDependencyExcludes>  
+                            </classpathDependencyExcludes>  
+                        </configuration>  
+                    </plugin>  
+                  </plugins>   
+            </build>
+        </profile>
+    </profiles>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ejb-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <ejbVersion>3.1</ejbVersion>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

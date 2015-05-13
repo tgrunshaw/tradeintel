@@ -1,0 +1,13 @@
+Colours for TradeIntel
+
+Off White #ceced0
+
+Dark Grey #323232
+
+Light Grey #6e6f72
+
+Blues from #058eb8 to #016287
+
+Main Blue #0177a0
+
+Green #549e00

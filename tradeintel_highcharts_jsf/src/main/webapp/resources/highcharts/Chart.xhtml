@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <cc:interface>
+        <cc:attribute name="title" default=""/>
+        <cc:attribute name="subTitle" default =""/>
+        <cc:attribute name="yLabel" default =""/>
+        <cc:attribute name="xLabel" default=""/>
+        <cc:attribute name="xMinTickInterval" default="0"/>
+        <cc:attribute name="showMarkers" default="true"/>
+    </cc:interface>
+
+    <cc:implementation>
+        <div id="#{cc.id}_chartDiv"/>
+
+        <script type="text/javascript">  
+            
+            $(function() {
+                // Data must be defined WITHIN the function. This prevents
+                // different charts using the same data variables. 
+                var chart = {
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+                         renderTo: '#{cc.id}_chartDiv',
+                         zoomType: 'x',
+                         width: 720
+                         //margin: [50, 50, 100, 80]
+                     },
+                     colors: [
+                        '#4572A7', 
+                        '#AA4643', 
+                        '#89A54E', 
+                        '#80699B', 
+                        '#3D96AE', 
+                        '#DB843D', 
+                        '#92A8CD', 
+                        '#A47D7C', 
+                        '#B5CA92'
+                     ],
+                     title: {
+                         text: '#{cc.attrs.title}'
+                     },
+                     subtitle: {
+                         text: '#{cc.attrs.subTitle}'
+                     },
+                     xAxis: {
+                         title: {
+                             enabled: true,
+                             text: '#{cc.attrs.xLabel}'
+                         }, 
+                         minTickInterval: #{cc.attrs.xMinTickInterval}
+                     },
+                     yAxis: {
+                         title: {
+                             text: '#{cc.attrs.yLabel}'
+                         }
+                     },
+                     legend: {
+                         enabled: false
+                     },
+                     plotOptions: { // shouldn't really go here. Belongs in series.
+                        series: {
+                            marker: {
+                                // A more general place for this options would be in individual series.                               }
+                                enabled: #{cc.attrs.showMarkers}
+                            }
+                        }
+                     }                     
+                };
+                <cc:insertChildren />
+                // Don't create the chart if there are no series defined.
+                if(typeof chart.series !== "undefined") {
+                    if(chart.series.length > 1) {
+                        chart.legend.enabled = true;
+                    }
+                    var chartObject = new Highcharts.Chart(chart);
+                }
+            });
+        </script>
+    </cc:implementation>
+</html>

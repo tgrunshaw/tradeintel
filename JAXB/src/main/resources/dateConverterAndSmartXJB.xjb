@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+See wiki.
+-->
+<jxb:bindings 
+xmlns:jxb="http://java.sun.com/xml/ns/jaxb" version="2.1" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema"
+xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc">
+  <jxb:globalBindings generateElementProperty="false"
+    localScoping="toplevel">
+    <xjc:simple/>
+    <jxb:javaType name="java.sql.Timestamp" xmlType="xs:dateTime"
+      parseMethod="nz.co.tradeintel.trademe.utility.dateadapter.DateAdapter.parseDateTime"
+      printMethod="nz.co.tradeintel.trademe.utility.dateadapter.DateAdapter.printDateTime"
+    />
+    <jxb:serializable uid="1" />
+  </jxb:globalBindings>
+</jxb:bindings>

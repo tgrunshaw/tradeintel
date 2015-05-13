@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:hc="http://nz.co.kevindoran/highcharts-jsf">
+
+    <cc:interface>
+        <cc:attribute name="name" default=""/>
+        <cc:attribute name="series" type="nz.co.kevindoran.highcharts.ColumnSeries"/>
+        <cc:attribute name="visible" default="true" />
+        <cc:attribute name='tickmarkPlacement' default="between"/>
+        <cc:attribute name="type" default="column"/>
+        <cc:attribute name="stack" />
+        <cc:attribute name="yAxis" />
+    </cc:interface>                       
+
+    <!-- I chose the series to contain the category names, as from the server/Java
+    point of view, it is important to maintain a map from category name
+    to value, instead of the series just being a list of numbers. If two
+    series are added, only the first will set the category names. -->
+    <cc:implementation>     
+<h:outputScript name="javascript/highcharts/js/highcharts.js" target="head" />        
+       if(typeof chart.xAxis.categories === "undefined") {
+            chart.xAxis.categories = 
+            [<ui:repeat value="#{cc.attrs.series.columns}" var="column">
+                 '#{column.name}',
+             </ui:repeat>];
+        }
+        var data = <hc:ColumnSeriesData series="#{cc.attrs.series}"/>;
+        
+        chart.xAxis.tickmarkPlacement = '#{cc.attrs.tickmarkPlacement}';
+        var series = {
+            type: '#{cc.attrs.type}',
+            name: '#{cc.attrs.name}',
+            visible: #{cc.attrs.visible},
+            <ui:fragment rendered="#{not empty cc.attrs.stack}">
+            stack: '#{cc.attrs.stack}',
+            </ui:fragment>
+            <ui:fragment rendered="#{not empty cc.attrs.yAxis}">
+            yAxis: #{cc.attrs.yAxis},
+            </ui:fragment>            
+            data: data
+        };
+        if(typeof chart.series === "undefined") {
+            chart.series = [];
+        }
+        <cc:insertChildren />        
+        chart.series.push(series);
+    </cc:implementation>
+</html>

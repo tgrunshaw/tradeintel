@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute name="name" default=""/>
+        <cc:attribute name="type" default="scatter" />
+        <cc:attribute name="series" type="nz.co.tradeintel.highcharts.TimeChartSeries" />
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <h:outputScript name="javascript/highcharts/js/highcharts.js" target="head" />
+        var data = [<ui:repeat value="#{cc.attrs.series.data}" var="event">
+                        [(new Date()).setTime(#{event.dateTime.time}), #{event.value}],
+                    </ui:repeat>]; 
+        var series = {
+            type:'#{cc.attrs.type}',
+            name:'#{cc.attrs.name}',
+            data: data
+        };
+        // If this is the first series to be created, then the series property
+        // wont have been created or set.
+        if(typeof options.series === "undefined") {
+            options.series = [];
+        }
+        options.series.push(series);
+    </cc:implementation>
+</html>

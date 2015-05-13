@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:hc="http://nz.co.kevindoran/highcharts-jsf">
+    <h:head>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript"></script>
+
+        <title>Highcharts JSF Example</title>
+        <style type="text/css">
+            h1 {
+                font-size: 1.5em;
+                font-family: sans-serif;
+                color: brown;
+                text-align: center;
+            }
+            #subtitle {
+                color: dimgray;
+                text-align: center;
+            }
+            .graph {
+                margin:auto;
+                margin-top:80px;
+                width:900px;
+            }
+            a:visited {
+                color: dodgerblue;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <h1>New Zealand National Ethnic Population Projections</h1>
+        <div id="subtitle">
+        Projections for the New Zealand Population makeup for the year 2026 using 
+        data from 2006. For more information, see
+        <a href="http://www.stats.govt.nz/browse_for_stats/population/estimates_and_projections/NationalEthnicPopulationProjections_HOTP2006-26.aspx">the full report</a>
+        from Statistics New Zealand. 2006 estimates are shown for comparison.
+        </div>
+        
+        <h:panelGroup layout="block" styleClass="graph">
+            <hc:Chart title="New Zealand Nation Ethnic Population Estimates for 2006" xLabel="Age Groups (Years)" yLabel="Percentage of Total Population">
+                <hc:ColumnSeries name="NZ European" series="#{nZEthnicPopulation2006.nzEuropeanSeries}"/>
+                <hc:ColumnSeries name="Maori" series="#{nZEthnicPopulation2006.maoriSeries}"/>
+                <hc:ColumnSeries name="Pacific" series="#{nZEthnicPopulation2006.pacificSeries}" />
+                <hc:ColumnSeries name="Asian" series="#{nZEthnicPopulation2006.asianSeries}" />
+            </hc:Chart>
+        </h:panelGroup>  
+        
+        <h:panelGroup layout="block" styleClass="graph">
+            <hc:Chart title="New Zealand Nation Ethnic Population Projections for 2026" xLabel="Age Groups (Years)" yLabel="Percentage of Total Population">
+                <hc:ColumnSeries name="NZ European" series="#{nZEthnicPopulation2026.nzEuropeanSeries}" />
+                <hc:ColumnSeries name="Maori" series="#{nZEthnicPopulation2026.maoriSeries}"/>
+                <hc:ColumnSeries name="Pacific" series="#{nZEthnicPopulation2026.pacificSeries}" />
+                <hc:ColumnSeries name="Asian" series="#{nZEthnicPopulation2026.asianSeries}" />
+            </hc:Chart>
+        </h:panelGroup>
+    </h:body>
+</html>
+

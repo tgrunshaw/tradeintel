@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <cc:interface>
+        <cc:attribute name="enabled" />
+        <cc:attribute name="fillColor" />
+        <cc:attribute name="lineColor" />
+        <cc:attribute name="lineWidth"  />
+        <cc:attribute name="radius"/>
+        <cc:attribute name="symbol" />
+    </cc:interface>
+
+    <cc:implementation>
+        var marker = {
+            <ui:fragment rendered="not empty cc.atttrs.lineWidth">
+                enabled: #{cc.attrs.enabled},
+            </ui:fragment>
+            fillColor: '#{cc.attrs.fillColor}',
+            lineColor: '#{cc.attrs.lineColor}',
+            <ui:fragment rendered="not empty cc.atttrs.lineWidth">
+                lineWidth: #{cc.attrs.lineWidth},
+            </ui:fragment>
+            <ui:fragment rendered="not empty cc.atttrs.lineWidth">
+                radius: #{cc.attrs.radius},
+            </ui:fragment>
+            symbol: '#{cc.attrs.symbol}'
+        };
+        if(typeof series === "undefined") {
+            if(typeof chart.plotOptions === "undefined") {
+                chart.plotOptions = {};
+            }
+            if(chart.plotOptions.series === "undefined") {
+                chart.plotOptions.series = {};
+            }
+            chart.plotOptions.series.marker = marker;
+        }
+        else {
+            series.marker = marker;
+        }
+    </cc:implementation>
+</html>

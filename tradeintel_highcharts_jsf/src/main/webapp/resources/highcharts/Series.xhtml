@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <cc:interface>
+        <cc:attribute name="index" default="" />    
+        <cc:attribute name="legendIndex" default="" />        
+        <cc:attribute name="name" default="" />
+        <cc:attribute name="stack" default="" />        
+        <cc:attribute name="xAxis" default="" />
+        <cc:attribute name="yAxis" default="" />
+        <cc:facet name="data" required="true" />
+    </cc:interface>
+
+    <cc:implementation>
+        <h:outputScript name="javascript/highcharts/js/highcharts.js" target="head" />
+        <cc:renderFacet name="data" />
+        var series = {
+            type: type,
+            legendIndex:'#{cc.attrs.legendIndex}',
+            name:'#{cc.attrs.name}',
+            stack:'#{cc.attrs.stack}',
+            type:'#{cc.attrs.type}',
+            xAxis:'#{cc.attrs.xAxis}',
+            yAxis:'#{cc.attrs.yAxis}',
+            data: data
+        };
+        if(typeof chart.series === "undefined") {
+            chart.series = [];
+        }
+        chart.series.push(series);
+    </cc:implementation>
+</html>

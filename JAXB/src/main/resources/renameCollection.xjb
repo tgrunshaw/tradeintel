@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+See wiki.
+-->
+<jxb:bindings 
+    xmlns:jxb="http://java.sun.com/xml/ns/jaxb" version="2.1"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc">
+    
+    <jxb:bindings schemaLocation="./api.trademe.co.nz.v1.xsd">
+        <jxb:bindings node="/xs:schema/xs:complexType[@name='PagedCollectionOfBidte0r55Be']">
+            <jxb:class name="BidPages" />
+        </jxb:bindings>
+        <jxb:bindings node="/xs:schema/xs:complexType[@name='InnerCollectionOfBidte0r55Be']">
+            <jxb:class name="BidList" />
+        </jxb:bindings>
+        <jxb:bindings node="/xs:schema/xs:complexType[@name='PagedCollectionOfQuestionte0r55Be']">
+            <jxb:class name="QuestionPages" />
+        </jxb:bindings>
+        <jxb:bindings node="/xs:schema/xs:complexType[@name='InnerCollectionOfQuestionte0r55Be']">
+            <jxb:class name="QuestionList" />
+        </jxb:bindings>  
+        <jxb:bindings node="/xs:schema/xs:complexType[@name='PagedCollectionOfSoldItemte0r55Be']">
+            <jxb:class name="SoldItemPages" />
+        </jxb:bindings>
+        <jxb:bindings node="/xs:schema/xs:complexType[@name='PagedCollectionOfItemte0r55Be']">
+            <jxb:class name="ItemPages" />
+        </jxb:bindings>
+        <jxb:bindings node="/xs:schema/xs:complexType[@name='PagedCollectionOfUnsoldItemte0r55Be']">
+            <jxb:class name="UnsoldItemPages" />
+        </jxb:bindings>
+        <!-- this is not needed at the moment, as the global binding in dateConverterAndSmartXJB.xjb is used instead-->   
+        <!--<bindings node="/xs:schema/xs:complexType[@name='InnerCollectionOfBidte0r55Be']//xs:element[@name='Bid']">
+            <property name="bids"/>
+        </bindings>
+        <bindings node="/xs:schema/xs:complexType[@name='InnerCollectionOfQuestionte0r55Be']//xs:element[@name='Question']">
+            <property name="questions"/>
+        </bindings>-->
+    </jxb:bindings>
+</jxb:bindings>

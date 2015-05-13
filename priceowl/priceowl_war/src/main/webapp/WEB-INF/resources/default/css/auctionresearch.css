@@ -1,0 +1,244 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 10/02/2014, 12:27:54 PM
+    Author     : Kevin
+*/
+
+/* Override bootstrap theme cover.css to spread the top logo towards the edges */
+.inner {
+    padding: 25px; // was 30px;
+}
+
+.logo{
+    height: 2.5em;
+}
+
+.owl {
+    height: 3em;
+}
+
+ul.masthead-nav{
+    margin-top: 15px;
+}
+
+
+.cover-container {
+    /* margin-bottom: 20em;*/
+}
+
+
+
+.input-group-btn {
+    max-width: 70%;
+}
+
+.result img {
+    margin: 2em;
+    border-radius: 2px;
+}
+
+.result .panel {
+    text-align: left;
+    color: black;
+    text-shadow: none;
+}
+
+.expected-value-group.panel-body {
+    /* To allow the inner elements to use padding. This allows their background
+    / to extend to their edges. */
+    padding: 0;
+}
+
+.expected-value-label {
+    display: inline-block;
+    padding: 0.5em;
+    color: white;
+    background-color: rgb(17, 95, 143);
+    margin-right: 1em;
+    border-radius: 3px;
+    margin-top: 1px; 
+    border-top-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;    
+}
+
+.expected-value {
+    display: inline-block;
+    padding: 0.5em;   
+    font-weight: bold;
+    color: rgb(17, 98, 143);
+}
+
+.accuracy {
+    color: white;
+    padding: 0.5em;
+    background-color: orange;
+    margin-left: 2em;
+    text-shadow: 0.4px 0.5px 2px black;    
+}
+
+.similar-auctions a {
+    /* This is the boostrap default. The PriceOwl page uses white
+    links instead. Revert to the bootstrap theme inside the list box. */
+    color: rgb(66, 139, 202);
+}
+
+.image-frame {
+    border-radius: 4px 4px 0px 0px;
+    margin-top: 3em;
+    background-color: rgb(68, 68, 68);
+    box-shadow: 0px 0px 50px rgb(17, 17, 17) inset;    
+}
+
+
+
+.summary.panel {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+.accuracy.label {
+    float: right;
+    margin: 0.5em;
+}
+
+.high-accuracy {
+    background-color: rgb(92,184,92);
+}
+
+.medium-accuracy {
+    background-color: rgb(153,153,153);
+}
+
+.low-accuracy {
+    background-color: rgb(217,83,79);
+}
+
+html,
+body {
+    height: 100%;
+    background-color: #592;
+}
+body {
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 1px 3px rgba(0,0,0,.5);
+}
+
+a {
+    color: white;
+}
+
+.auction-photo {
+    max-height: 190px;
+    max-width: 335px;
+}
+
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 750px) {
+    .container {
+        width: 650px;
+    }
+    .nav {
+        float:right;
+    }
+    .header a {
+        text-align: left;
+    }
+
+    .auction-photo {
+        max-height: 300px;
+        max-width: 570px;
+    }    
+
+
+    .vingnette {
+        position: fixed;
+        /* to prevent empty space around the vignette */
+        top: 0;
+        left: 0;
+        /* extends to the whole visible area */
+        width: 100%;
+        height: 100%;
+        box-shadow: 0 0 70px rgba(0,0,0,0.5) inset;
+    }    
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 970px) {
+
+
+}
+
+/* IE6, IE7, IE8 */
+.container { width: 650px\9; }
+.nav {float: right\9;}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1170px) {
+
+}
+
+.row {
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+
+.nav > li {
+    display: inline-block;
+}
+.nav > li + li {
+    margin-left: 20px;
+}
+.nav > li > a {
+    padding-left: 0;
+    padding-right: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff; /* IE8 proofing */
+    color: rgba(255,255,255,.75);
+    border-bottom: 2px solid transparent;
+}
+.nav > li > a:hover,
+.nav > li > a:focus {
+    background-color: transparent;
+    border-bottom-color: rgba(255,255,255,.25);
+}
+.nav > .active > a,
+.nav > .active > a:hover,
+.nav > .active > a:focus {
+    color: #fff;
+    border-bottom-color: #fff;
+}
+
+p.insufficient-message {
+    margin: 0;
+    padding: 0.5em;
+}
+
+.messages ul {
+    margin-top: 1em;
+    text-shadow: none;
+    list-style-type: none;    
+}
+
+.footer {
+    position: relative;
+    margin-top: -60px;
+    height: 60px;
+    clear: both;
+    padding-top: 20px;
+}
+
+.gained-money {
+	background-color: green;
+}
+
+.lost-money {
+	background-color: red;
+}

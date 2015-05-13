@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" lang="en">
+    <h:head>
+        <title>PriceOwl Research</title>
+    </h:head>
+    <h:body>
+		<ui:composition template="/WEB-INF/templates/template.xhtml">
+			<ui:define name="header">
+				<ul class="nav">
+					<li class="active"><a href="index.xhtml">Home</a></li>
+					<li><a href="auctionresearch.xhtml">Buy or Fly</a></li>
+					<li><a href="about.xhtml">about</a></li>
+					<li><a href="survey.xhtml">Survey</a></li>
+				</ul>
+				<a href="index.xhtml"><h3><h:graphicImage styleClass='logo' library="default" name='img/priceOwlFont.png'/>
+						<h:graphicImage styleClass='owl' library="default" name="img/owl.png" /></h3></a>
+			</ui:define>
+
+			<ui:define name="content">
+				<div class="row">
+					<h1 class="cover-heading">Buy on Trade Me</h1>
+					<h:form id="form" class="search">
+						<div class="input-group">
+							<h:inputText id="auctionInput" styleClass="form-control myautocomplete" pt:placeholder="Search for an item" value="#{auctionResearcher.auctionNoOrUrl}"/>
+							<span class="input-group-btn">
+								<h:commandButton styleClass="btn btn-default" action="#{auctionResearcher.calculate()}" value="Search" title="Search" />
+							</span>
+						</div>
+						<div id="messages" class="messages">
+							<h:messages styleClass="alert alert-warning info-message" />
+						</div>
+					</h:form>
+
+					<h:panelGroup rendered="#{auctionResearcher.searchComplete}" layout="block" styleClass="result" >
+						<h:panelGroup rendered="#{auctionResearcher.stats.sufficientData}">
+							<div class="filters">
+								<h:form id="filters">
+									<div class="filters btn-group">
+										<h:commandButton styleClass="btn btn-default" title="New" value="New" action="#{valuator.setNewFilter()}"/>
+										<h:commandButton styleClass="btn btn-default" title="Used" value="Used" action="#{valuator.setUsedFilter()}"/>
+										<h:commandButton styleClass="btn btn-default active" title="Any" value="Any" action="#{valuator.setAnyFilter()}"/>
+									</div>
+									<div class="btn-group-vertical">
+										<button type="button" class="btn btn-default active" value="#{valuator.getSuggestedCategory(0)}" action="#{valuator.setCategory(0)}"/>
+										<button type="button" class="btn btn-default" value="#{valuator.getSuggestedCategory(1)}" action="#{valuator.setCategory(1)}"/>
+										<button type="button" class="btn btn-default" value="#{valuator.getSuggestedCategory(2)}" action="#{valuator.setCategory(2)}"/>
+									</div>
+								</h:form>
+							</div>
+							<div style="results">
+								<span class="average-label">Average price:</span>
+								<!--<h:outputText styleClass="average-value" value="#{valuator.}"-->
+							</div>
+								 <span class="expected-value-label">Average price</span>
+								<h:outputText styleClass="expected-value" value="#{auctionResearcher.stats.itemStats.meanPrice}">
+									<f:convertNumber type="currency" currencySymbol="$" />
+								</h:outputText>
+								<h:outputText value="#{auctionResearcher.stats.accuracy} accuracy" styleClass="label accuracy #{auctionResearcher.stats.accuracy}-accuracy" />                                    
+						</h:panelGroup>
+						<h:panelGroup rendered="#{!auctionResearcher.stats.sufficientData}">
+							<p class="insufficient-message text-danger">Sorry, there were too few similar auctions to produce an accurate valuation. 
+								We are in beta and are actively looking to improve the number of auctions we use. </p>
+						</h:panelGroup>
+				</div>
+				</div>
+
+				<h:panelGroup layout="block" class="similar-auctions panel panel-default" rendered="#{!empty auctionResearcher.stats.mostRelevantSoldAuctions}">
+					<div class="panel-heading">
+						Similar Sold Auctions
+					</div>
+					<ul class="list-group">
+						<ui:repeat value="#{auctionResearcher.stats.mostRelevantSoldAuctions}" var="listing" >
+							<li class="list-group-item">
+								<h:outputLink value="http://www.trademe.co.nz/#{listing.listingId}" target="_blank">#{listing.title}</h:outputLink>
+							</li>
+						</ui:repeat>
+					</ul>
+				</h:panelGroup>
+
+				<h:panelGroup layout="block" styleClass="similar-auctions panel panel-default" rendered="#{!auctionResearcher.stats.sufficientData and !empty auctionResearcher.stats.mostRelevantUnsoldAuctions}">
+					<div class="panel-heading">
+						Similar Unsold Auctions
+					</div>
+					<ul class="list-group">
+						<ui:repeat value="#{auctionResearcher.stats.mostRelevantUnsoldAuctions}" var="listing" >
+							<li class="list-group-item">
+								<h:outputLink value="http://www.trademe.co.nz/#{listing.listingId}" target="_blank">#{listing.title}</h:outputLink>
+							</li>
+						</ui:repeat>
+					</ul>                       
+				</h:panelGroup>
+				</h:panelGroup>
+				</div>
+			</ui:define>
+
+			<ui:define name="scripts">
+				<script>
+					$(document).ready(initializeAutocomplete());
+				</script>
+			</ui:define>
+		</ui:composition>
+    </h:body>
+</html>

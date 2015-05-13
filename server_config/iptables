@@ -1,0 +1,203 @@
+#!/bin/bash
+# TradeIntel Server IPTables script
+
+# VARIABLES - Change these to match your environment.
+# Location of the binaries
+IPT="/sbin/iptables"
+IPT6="/sbin/ip6tables"
+SYSCTL="/sbin/sysctl"
+
+# Loopback Interface
+LOOPBACK="lo"
+
+# Define External Network
+EXT_INTER="eth0"
+EXT_ADDR="220.240.52.228"
+
+# If the second network adapter is connected to another one of our computers
+# or a private network. Currently not used.
+# Define Internal Network
+# INT_INTER="eth1"
+# INT_ADDR="192.168.0.100"
+# INT_NET="192.168.0.0/24"
+
+# Kernel Parameters. See wiki for explanation.
+$SYSCTL -q -w net/ipv4/conf/all/accept_redirects="0"
+$SYSCTL -q -w net/ipv4/conf/all/accept_source_route="0" 
+$SYSCTL -q -w net/ipv4/conf/all/send_redirects="0"
+$SYSCTL -q -w net/ipv4/conf/all/log_martians="1"
+$SYSCTL -q -w net/ipv4/conf/all/rp_filter="1"
+$SYSCTL -q -w net/ipv4/icmp_echo_ignore_broadcasts="1"
+$SYSCTL -q -w net/ipv4/ip_forward="0"
+$SYSCTL -q -w net/ipv4/tcp_syncookies="1"
+
+#IPV6 rules are duplicated.
+
+# Flush all Rules
+$IPT -F
+$IPT6 -F
+
+$IPT -t nat -F
+
+
+#Set Policies
+$IPT -P INPUT ACCEPT
+$IPT -P OUTPUT ACCEPT
+$IPT -P FORWARD ACCEPT
+
+$IPT6 -P INPUT ACCEPT
+$IPT6 -P OUTPUT ACCEPT
+$IPT6 -P FORWARD ACCEPT
+
+
+
+# Delete all User-created Chains
+$IPT -X
+$IPT -t nat -X
+
+$IPT -X
+
+# Allow access to the Loopback host
+$IPT -A INPUT -i $LOOPBACK -j ACCEPT
+$IPT -A OUTPUT -o $LOOPBACK -j ACCEPT
+
+$IPT6 -A INPUT  -i $LOOPBACK -j ACCEPT
+$IPT6 -A OUTPUT -o $LOOPBACK -j ACCEPT
+
+
+# SSH
+# Glassfish
+#   - unencrypted webpages (tcp, 80)
+#   - encrypted webpages   (tcp, 443)
+#   - web admin (blocked)
+# DNS
+# NTP
+# SMTP (for OSSEC email alerts)
+# MySQL (for slave replication) (tcp, 3306)
+
+# Redirect to Glassfish from port 80 and 443
+$IPT -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to 8080
+$IPT -t nat -A PREROUTING -p tcp --dport 443 -j REDIRECT --to 8081
+# Mangle port 8080 and 8081 so these cannot be externally used
+$IPT -t nat -A PREROUTING -p tcp --dport 8080 -j MARK --set-mark 1
+$IPT -t nat -A PREROUTING -p tcp --dport 8181 -j MARK --set-mark 1
+
+# SSH redirect
+$IPT -t nat -A PREROUTING -p tcp --dport 36333 -j REDIRECT --to 22
+# Mangle port 22 so it cannot be externally used
+$IPT -t nat -A PREROUTING -p tcp --dport 22 -j MARK --set-mark 1
+
+# MySQL redirect (security by obfuscation)
+$IPT -t nat -A PREROUTING -p tcp --dport 38111 -j REDIRECT --to 3306
+# Mangle port 3306 so it cannot be externally used
+$IPT -t nat -A PREROUTING -p tcp --dport 3306 -j MARK --set-mark 1
+
+# Solr redirect (security by obsfuscation)
+#$IPT -t nat -A PREROUTING -p tcp --dport 37222 -j REDIRECT --to 8983
+# Mangle port 8983 so that it cannot be externally used
+#$IPT -t nat -A PREROUTING -p tcp --dport 8983 -j MARK --set-mark 1
+
+# http://stackoverflow.com/questions/11065124/iptables-redirect-80-to-8080-but-block-public-8080-access
+# Reject all marked packets
+$IPT -A INPUT -m mark --mark 1 -j REJECT
+
+
+# SSH
+$IPT -A INPUT  -i $EXT_INTER -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+$IPT -A OUTPUT -o $EXT_INTER -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+
+$IPT6 -A INPUT  -i $EXT_INTER -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+$IPT6 -A OUTPUT -o $EXT_INTER -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+
+# Glassfish - unencrypted web
+$IPT -A INPUT  -i $EXT_INTER -p tcp --dport 8080 -m state --state NEW,ESTABLISHED -j ACCEPT
+$IPT -A OUTPUT -o $EXT_INTER -p tcp --sport 8080 -m state --state ESTABLISHED -j ACCEPT
+
+$IPT6 -A INPUT  -i $EXT_INTER -p tcp --dport 8080 -m state --state NEW,ESTABLISHED -j ACCEPT
+$IPT6 -A OUTPUT -o $EXT_INTER -p tcp --sport 8080 -m state --state ESTABLISHED -j ACCEPT
+
+# Glassfish - encrypted web
+$IPT -A INPUT  -i $EXT_INTER -p tcp --dport 8081 -m state --state NEW,ESTABLISHED -j ACCEPT
+$IPT -A OUTPUT -o $EXT_INTER -p tcp --sport 8081 -m state --state ESTABLISHED -j ACCEPT
+
+$IPT6 -A INPUT  -i $EXT_INTER -p tcp --dport 8081 -m state --state NEW,ESTABLISHED -j ACCEPT
+$IPT6 -A OUTPUT -o $EXT_INTER -p tcp --sport 8081 -m state --state ESTABLISHED -j ACCEPT
+
+# Internet DNS Rules
+$IPT -A INPUT  -i $EXT_INTER -p udp --sport domain -m state --state NEW,ESTABLISHED -j ACCEPT
+$IPT -A INPUT  -i $EXT_INTER -p tcp --sport domain -m state --state NEW,ESTABLISHED -j ACCEPT
+$IPT -A OUTPUT -o $EXT_INTER -p udp --dport domain -m state --state NEW,ESTABLISHED -j ACCEPT
+$IPT -A OUTPUT -o $EXT_INTER -p tcp --dport domain -m state --state NEW,ESTABLISHED -j ACCEPT
+
+$IPT6 -A INPUT  -i $EXT_INTER -p udp --sport domain -m state --state NEW,ESTABLISHED -j ACCEPT
+$IPT6 -A INPUT  -i $EXT_INTER -p tcp --sport domain -m state --state NEW,ESTABLISHED -j ACCEPT
+$IPT6 -A OUTPUT -o $EXT_INTER -p udp --dport domain -m state --state NEW,ESTABLISHED -j ACCEPT
+$IPT6 -A OUTPUT -o $EXT_INTER -p tcp --dport domain -m state --state NEW,ESTABLISHED -j ACCEPT
+
+# Outgoing SMTP for OSSEC email alerts
+$IPT -A INPUT  -i $EXT_INTER -p tcp --sport 25 -m state --state ESTABLISHED -j ACCEPT
+$IPT -A OUTPUT -o $EXT_INTER -p tcp --dport 25 -m state --state NEW,ESTABLISHED -j ACCEPT
+
+$IPT6 -A INPUT  -i $EXT_INTER -p tcp --sport 25 -m state --state ESTABLISHED -j ACCEPT
+$IPT6 -A OUTPUT -o $EXT_INTER -p tcp --dport 25 -m state --state NEW,ESTABLISHED -j ACCEPT
+
+# Internet NTP Rules
+# A NTP pool is used as the NTP server source, so a specific IP cannot be specified.
+$IPT -A INPUT -i $EXT_INTER -p udp --dport ntp -m state --state ESTABLISHED -j ACCEPT
+$IPT -A OUTPUT -o $EXT_INTER -p udp --sport ntp -m state --state NEW,ESTABLISHED -j ACCEPT
+
+$IPT -A INPUT -i $EXT_INTER -p udp --dport ntp -m state --state ESTABLISHED -j ACCEPT
+$IPT -A OUTPUT -o $EXT_INTER -p udp --sport ntp -m state --state NEW,ESTABLISHED -j ACCEPT
+
+# Access Trade Me data (non-encrypted) and  updates (note- this could be made more specific by listing 
+# host names). However, with iptables, DNS names are only resolved once on rule-load: api.trademe.co.nz
+$IPT -A INPUT -i $EXT_INTER  -p tcp --sport 80 -m state --state ESTABLISHED -j ACCEPT
+$IPT -A OUTPUT -o $EXT_INTER -p tcp --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT
+
+$IPT6 -A INPUT -i $EXT_INTER  -p tcp --sport 80 -m state --state ESTABLISHED -j ACCEPT
+$IPT6 -A OUTPUT -o $EXT_INTER -p tcp --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT
+
+# Access Trade Me data (encrypted)
+$IPT -A INPUT -i $EXT_INTER -p tcp --sport 443 -m state --state ESTABLISHED -j ACCEPT
+$IPT -A OUTPUT -o $EXT_INTER -p tcp --dport 443 -m state --state NEW,ESTABLISHED -j ACCEPT
+
+$IPT6 -A INPUT -i $EXT_INTER  -p tcp --sport 443 -m state --state ESTABLISHED -j ACCEPT
+$IPT6 -A OUTPUT -o $EXT_INTER -p tcp --dport 443 -m state --state NEW,ESTABLISHED -j ACCEPT
+
+# Allow in and out ICMP
+# Broadcast pings should still be dropped due to kernel option
+$IPT -A INPUT  -i $EXT_INTER -p icmp -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+$IPT -A OUTPUT -o $EXT_INTER -p icmp -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+
+# MySQL for slave replication
+$IPT -A INPUT  -i $EXT_INTER -p tcp --dport 3306 -m state --state NEW,ESTABLISHED -j ACCEPT
+$IPT -A OUTPUT -o $EXT_INTER -p tcp --sport 3306 -m state --state ESTABLISHED -j ACCEPT
+
+# Solr for slave replication
+#$IPT -A INPUT  -i $EXT_INTER -p tcp --dport 8983 -m state --state NEW,ESTABLISHED -j ACCEPT
+#$IPT -A OUTPUT -o $EXT_INTER -p tcp --sport 8983 -m state --state ESTABLISHED -j ACCEPT
+
+# OpenVPN for Solr using default port
+$IPT -A INPUT 	-i $EXT_INTER -p udp --dport 1194 -m state --state NEW,ESTABLISHED -j ACCEPT
+$IPT -A OUTPUT 	-o $EXT_INTER -p udp --sport 1194 -m state --state NEW,ESTABLISHED -j ACCEPT
+
+# Allow TUN interface connections to OpenVPN server
+$IPT -A INPUT -i tun0 -j ACCEPT
+
+$IPT -A OUTPUT -o tun0 -j ACCEPT
+
+# Allow TUN interface connections to be forwarded through other interfaces
+$IPT -A FORWARD -i tun0 -j ACCEPT
+
+
+
+# Reject everything else. Unfortunately, iptables cannot set REJECT as a default policy.
+$IPT -A INPUT   -j REJECT
+$IPT -A OUTPUT  -j REJECT
+$IPT -A FORWARD -j REJECT
+
+$IPT6 -A INPUT   -j REJECT
+$IPT6 -A OUTPUT  -j REJECT
+$IPT6 -A FORWARD -j REJECT
+
+

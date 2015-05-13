@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+See wiki.
+-->
+<jxb:bindings 
+xmlns:xs="http://www.w3.org/2001/XMLSchema"
+xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+xmlns:jxb="http://java.sun.com/xml/ns/jaxb" version="2.1"
+xmlns:ci="http://jaxb.dev.java.net/plugin/code-injector"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+jxb:extensionBindingPrefixes="ci "
+>
+    <jxb:bindings schemaLocation="./api.trademe.co.nz.v1.xsd">
+        <jxb:bindings multiple="true" node="/xs:schema/xs:complexType[@name='Bid']                                 |
+                                            /xs:schema/xs:complexType[@name='Attribute']                           |
+                                            /xs:schema/xs:complexType[@name='AttributeOption']                     |
+                                            /xs:schema/xs:complexType[@name='AttributeOptions']                    |
+                                            /xs:schema/xs:complexType[@name='AttributeUnit']                        |
+                                            /xs:schema/xs:complexType[@name='PagedCollectionOfBidte0r55Be']        |
+                                            /xs:schema/xs:complexType[@name='PagedCollectionOfQuestionte0r55Be']   |                                                                
+                                            /xs:schema/xs:complexType[@name='ShippingOption']                      |
+                                            /xs:schema/xs:complexType[@name='GeographicLocation']                  |
+                                            /xs:schema/xs:complexType[@name='OpenHome']                            |
+                                            /xs:schema/xs:complexType[@name='FixedPriceOfferCore']                                               
+                                            ">
+            <ci:code>
+    // jaxb-custom-generation
+    private int id;
+    
+    public int getId() {
+        return id;
+    }
+    
+    public void setId(int id) {
+        this.id = id;
+    }
+            </ci:code>
+        </jxb:bindings>
+    </jxb:bindings>
+</jxb:bindings>                
+
+<!-- /xs:schema/xs:complexType[@name='InnerCollectionOfBidte0R55Be.java']
+
+/xs:schema/xs:complexType[@name='InnerCollectionQuesion0R55Be.java']-->

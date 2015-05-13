@@ -1,0 +1,45 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>nz.co.tradeintel</groupId>
+    <artifactId>trademe_data_db</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>trademe_data_db</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+  
+    <dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.26</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <!--
+                Database migration plugin. 
+                -->
+                <groupId>com.googlecode.flyway</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>2.2.1</version>
+                <configuration>
+                    <url>jdbc:mysql://localhost:3306/trademe_data</url>
+                    <!-- Don't write MySQL username & password in here anymore 
+                        use the -D command line options instead.
+                    <user>user</user>
+                    <password>password</password>
+                    -->
+                    <!-- directory: db/migration is default -->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

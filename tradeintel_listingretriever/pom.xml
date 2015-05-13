@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+  
+    <parent>
+        <artifactId>tradeintel</artifactId>
+        <groupId>nz.co.tradeintel</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+  
+    <groupId>nz.co.tradeintel</groupId>
+    <artifactId>tradeintel_listingretriever</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>tradeintel_listingretriever</name>
+    
+    <modules>
+        <module>tradeintel_listingretriever_ear</module>
+        <module>tradeintel_listingretriever_war</module>
+        <module>tradeintel_listingretriever_ejb</module>
+        <module>tradeintel_apicredentials_ejb</module>
+        <module>tradeintel_apicredentials_interface</module>
+        <module>tradeintel_listingretriever_interface</module>
+        <module>../tradeintel_lib/tradeintel_trademe</module>
+        <module>..</module> <!-- This is the parent POM and needs to be installed -->
+    </modules>
+</project>

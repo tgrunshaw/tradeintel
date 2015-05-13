@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute name="text" />
+        <cc:attribute name="style"/>
+        <cc:attribute name="valueDecimals" default="0" />
+        <cc:attribute name="valuePrefix" default="" />
+        <cc:attribute name="valueSuffix" default="" />
+        <cc:attribute name="useHTML" default="true" />
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <h:outputScript name="javascript/highcharts/js/highcharts.js" target="head" />
+
+        var tooltip = {
+          useHTML: '#{cc.attrs.useHTML}',
+          valueDecimals: #{cc.attrs.valueDecimals},
+          valuePrefix: '#{cc.attrs.valuePrefix}',
+          valueSuffix: '#{cc.attrs.valueSuffix}',
+          hideDelay: 2000,
+          
+          <ui:fragment rendered="#{not empty cc.attrs.text}">
+          formatter: function() {
+              return #{cc.attrs.text};
+          },
+          </ui:fragment>
+          style: {
+            #{cc.attrs.style}
+          }
+      };
+      chart.tooltip = tooltip;
+    </cc:implementation>
+</html>

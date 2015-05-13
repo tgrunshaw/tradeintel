@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings version="2.0" xmlns="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd">
+    <persistence-unit-metadata>
+        <persistence-unit-defaults>
+            <access>FIELD</access>
+        </persistence-unit-defaults>
+    </persistence-unit-metadata>
+    <entity class="nz.co.trademe.api.v1.ListedItemDetail">
+        <!-- Reasons for having queries here:
+               -Alternative is for them to be dotted around in code.
+               -Often the queries are used in multiple places.
+               -It is easy to create a query when you can see similar queries.
+               -It is easy to create a detailed query when you see all the entities.
+        -->
+        <named-query name="getAllListingsWithId">
+            <query>Select listing from ListedItemDetail listing where listing.listingId in :listingIds</query>
+        </named-query>
+
+        <named-query name="getLastestListings">
+            <query>SELECT listing FROM ListedItemDetail listing ORDER BY listing.listingId DESC</query>
+        </named-query>
+
+        <named-query name="eagerlyGetAllListingsWithId">
+            <query>SELECT listing FROM ListedItemDetail listing WHERE listing.listingId in :listingIds</query>
+            <!-- The join fetches may be redundant, as EclipseLink seems to often get one-to-one relationships anyway. -->
+            <hint name="eclipselink.left-join-fetch" value="listing.member" />
+            <hint name="eclipselink.left-join-fetch" value="listing.bids" />
+            <hint name="eclipselink.left-join-fetch" value="listing.questions" />
+            <hint name="eclipselink.left-join-fetch" value="listing.dealership" />
+            <hint name="eclipselink.left-join-fetch" value="listing.agency" />                        
+            <hint name="eclipselink.left-join-fetch" value="listing.geographicLocation" />                                   
+            <hint name="eclipselink.batch" value="listing.shippingOptions" />  
+            <hint name="eclipselink.batch" value="listing.openHomes" />             
+            <hint name="eclipselink.batch" value="listing.attributes" />
+            <!--             Unfortunately, the following only works when there are questions
+            and bids present. Any listings which do not have questions or bids will
+            not be returned from a search. If performance is an issue, see AttributeOption
+            where a relationship has been marked as batch-fetch.            -->
+            <!--<hint name="eclipselink.batch" value="listing.questions.list" />   
+            <hint name="eclipselink.batch" value="listing.bids.list" /> -->
+            <hint name="eclipselink.batch_type" value="IN" />                      
+        </named-query>
+        
+        <attributes>
+            <!-- Attention: why would we ever use cascade-merge? I can understand cascade-persist...
+            Also, some relationships seem to be ignored.
+            -->
+            <basic name="body">
+                <column length="2048"/>
+            </basic>
+            <basic name="allowsPickups">
+                <enumerated>STRING</enumerated>
+            </basic>
+            <!-- Seller is always empty -->
+            <many-to-one name="member" fetch="LAZY">
+                <cascade>
+                    <cascade-merge/>
+                </cascade>
+            </many-to-one>
+            <one-to-one name="bids" fetch="LAZY">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+            <one-to-one name="questions" fetch="LAZY">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+            <many-to-one name="dealership" fetch="LAZY">
+                <cascade>
+                    <cascade-merge/>
+                </cascade>                
+            </many-to-one>
+            <many-to-one name="agency" fetch="LAZY">
+                <cascade>
+                    <cascade-merge/>
+                </cascade>                
+            </many-to-one>
+            <one-to-many name="shippingOptions" fetch="LAZY">
+                <cascade>
+                    <cascade-all/>
+                </cascade>                   
+            </one-to-many>
+            <transient name="photos">
+                <!-- 
+                    We do not want to keep all of the photoUrls (there are 5 and 
+                    they take up a lot of space. The photoId in Item is sufficient. 
+                -->
+            </transient>
+            <transient name="sales">
+                <!--
+                Only applicable to the buyer or seller it seems. 
+                -->
+            </transient>
+            <transient name="pendingOffer">
+                <!--
+                Only available if you are the seller or a recipient of the offer.
+                -->
+            </transient>
+            <transient name="contactDetails" >
+                <!-- No purpose in storing this field. -->
+            </transient>            
+        </attributes>
+    </entity>
+    <entity class="nz.co.trademe.api.v1.Item">
+        <inheritance strategy="TABLE_PER_CLASS"/>
+        <!-- 
+            Join table:     too slow for search
+            Single table:   may result in a huge number of columns if we start using
+                            car, listing, boat, etc which all will add their own
+                            columns to the single table.
+            Table per class: the best choice because it has neither of the above
+                                drawbacks. Note - the ITEM (and associated join tables)
+                                should be manually deleted, assuming we never work
+                                with Items themselves (only child classes). 
+        -->
+        <discriminator-column discriminator-type="STRING"/>
+        <attributes>
+            <id name="listingId">
+            </id>
+            <basic name="reserveState">
+                <enumerated>STRING</enumerated>
+            </basic>
+            <basic name="reservePrice">
+                <column precision="10" scale="2"/>
+            </basic>
+            <basic name="startPrice">
+                <column precision="10" scale="2"/>
+            </basic>
+            <basic name="buyNowPrice">
+                <column precision="10" scale="2"/>
+            </basic>
+            <basic name="maxBidAmount">
+                <column precision="10" scale="2"/>
+            </basic>
+            <one-to-one name="geographicLocation" fetch="LAZY">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+            <one-to-many name="attributes" fetch="LAZY">
+                <cascade>
+                    <cascade-all/>
+                </cascade>                
+            </one-to-many>
+            <one-to-many name="openHomes" fetch="LAZY">
+                <cascade>
+                    <cascade-all/>
+                </cascade>                 
+            </one-to-many>          
+            <transient name="quantity">
+                <!--
+                When retrieving listing details, this value is only present if you are the seller.
+                -->
+            </transient>
+            <transient name="remainingGalleryPlusRelists">
+                <!--
+                This value is only present if you are the seller and the listing 
+                had the gallery promotion applied due to the gallery plus promotion.
+                -->
+            </transient>
+            <transient name="isOnWatchList">
+                <!--
+                Indicates whether the item is on the authenticated member’s watchlist.
+                -->
+            </transient>
+            <transient name="sendPaymentInstructions">
+                <!--
+               Indicates whether payment instructions are automatically sent to buyers. 
+                This value is only present if you are the seller.
+                -->
+            </transient>
+        </attributes>
+    </entity>
+    <entity class="nz.co.trademe.api.v1.Member">
+        <attributes>
+            <id name="memberId">
+            </id>
+        </attributes>
+    </entity>
+    <entity class="nz.co.trademe.api.v1.BidCollection">
+    </entity>
+    <entity class="nz.co.trademe.api.v1.BidPages">
+        <attributes>
+            <id name="id">
+                <generated-value />
+            </id>
+            <one-to-many name="list">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+        </attributes>
+    </entity>
+    <entity class="nz.co.trademe.api.v1.Bid">
+        <attributes>
+            <id name="id">
+                <generated-value />
+            </id>
+            <basic name="bidAmount">
+                <column precision="10" scale="2"/>
+            </basic>
+            <many-to-one name="bidder">
+                <cascade>
+                    <cascade-merge/>
+                </cascade>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="nz.co.trademe.api.v1.Questions">
+        <!-- 
+        This defaults to single table inheritance of QuestionPages. 
+        Single table means one table is used for the whole hierarchy, with the
+        type stored in a column.
+        -->
+    </entity>
+    <entity class="nz.co.trademe.api.v1.QuestionPages">
+        <attributes>
+            <id name="id">
+                <generated-value />
+            </id>
+            <!-- 
+            Note:
+                Page field is always 1. I.e. all questions always fit on one page.
+            -->
+            <one-to-many name="list">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+        </attributes>
+    </entity>
+    <entity class="nz.co.trademe.api.v1.Question">
+        <attributes>
+            <id name="listingQuestionId">
+            </id>
+            <basic name="comment">
+                <column length="500"/>
+            </basic>
+            <basic name="answer">
+                <column length="500"/>
+            </basic>
+            <many-to-one name="askingMember">
+                <cascade>
+                    <cascade-merge/>
+                </cascade>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="nz.co.trademe.api.v1.ShippingOption">
+        <attributes>
+            <id name="id">
+                <generated-value />
+            </id>
+            <basic name="type">
+                <enumerated>STRING</enumerated>
+            </basic>
+        </attributes>
+    </entity>
+    <entity class="nz.co.trademe.api.v1.Attribute">
+        <attributes>
+            <id name="id">
+                <generated-value />
+            </id>
+            <basic name="type">
+                <enumerated>STRING</enumerated>
+            </basic>
+            <!-- Choosen as it is expected (useful to investigate further) that
+            once a Attribute is accessed, the attribute options are likely to
+            be accessed also. In addition, the attribute options are not likely
+            to be a very large list. Finally, I don't know how to use batch-fetching
+            at query time for a relationship which is deaper that the entity which is
+            being queried (ListedItemDetail). Therefore, for the eagerlyGetAllListings 
+            query will not be able to get all thing eagerly if any sub-one-to-many or
+            sub-many-to-many relationship is not marked EAGER. The choice of type="IN"
+            should be investigated further- See wiki. -->
+            <!--            <one-to-many name="options" fetch="EAGER">
+                <batch-fetch type="IN"/>
+            </one-to-many>
+             Same reasons as for options 
+            <one-to-many name="units" fetch="EAGER">
+                <batch-fetch type="IN"/>
+            </one-to-many>-->
+        </attributes>
+    </entity>
+    <entity class="nz.co.trademe.api.v1.AttributeOption">
+        <attributes>
+            <id name="id">
+                <generated-value />
+            </id>
+        </attributes>
+    </entity>
+    <entity class="nz.co.trademe.api.v1.AttributeUnit">
+        <attributes>
+            <id name="id">
+                <generated-value />
+            </id>
+        </attributes>
+    </entity>
+    <embeddable class="nz.co.trademe.api.v1.Agent">
+    </embeddable>
+    <entity class="nz.co.trademe.api.v1.Agency">
+        <attributes>
+            <id name="id">
+            </id>
+            <!-- agents will need a generated ID for this to not be transient/blob. -->
+            <transient name="agents" />
+            <!-- See the description on Attribute.options -->
+            <!--<one-to-many name="agents" fetch="EAGER">
+                <batch-fetch type="IN"/>
+            </one-to-many>-->
+        </attributes>
+    </entity>
+    <entity class="nz.co.trademe.api.v1.Company">
+        <inheritance strategy="TABLE_PER_CLASS" />
+        <!--
+            Dealership and Agency has been split into separate tables, as they
+            both have an ID in xml, which is used as the primary key. 
+            In theory TradeMe will never have a Dealership and Agency with the 
+            same id, as they both extend company, but we have played it safe and
+            assumed that they could.
+        -->
+        <attributes>
+            <id name="id">
+            </id>
+        </attributes>
+    </entity>
+    <entity class="nz.co.trademe.api.v1.Dealership">
+        <attributes>
+            <id name="id">
+            </id>
+            <!-- agents will need a generated ID for this to not be transient/blob. -->
+            <transient name="dealers" />
+            
+            <!-- See the description on Attribute.options -->
+            <!--<one-to-many name="dealers" fetch="EAGER">
+                <batch-fetch type="IN"/>
+            </one-to-many>-->
+                
+        </attributes>
+    </entity>
+    <entity class="nz.co.trademe.api.v1.OpenHome">
+        <attributes>
+            <id name="id">
+                <generated-value/>
+            </id>
+        </attributes>
+    </entity>
+    <entity class="nz.co.trademe.api.v1.GeographicLocation">
+        <attributes>
+            <id name="id">
+                <generated-value/>
+            </id>
+        </attributes>
+    </entity>
+    <embeddable class="nz.co.trademe.api.v1.AttributeRange">
+    </embeddable>
+    <embeddable class="nz.co.trademe.api.v1.AttributeType">
+    </embeddable>
+    
+    <!-- The below are enums and do not need to be included
+    <embeddable class="nz.co.trademe.api.v1.ShippingType">
+    </embeddable>
+    <embeddable class="nz.co.trademe.api.v1.MapAccuracy">
+    </embeddable>
+    <embeddable class="nz.co.trademe.api.v1.PickupOptions">
+    </embeddable>
+    -->
+</entity-mappings>

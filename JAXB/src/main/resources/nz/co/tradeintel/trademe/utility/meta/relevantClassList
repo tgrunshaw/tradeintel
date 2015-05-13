@@ -1,0 +1,14 @@
+# This file lists the full class name (including package) of 'root' classes 
+# used by TradeIntel. This file is used by ClassHierarchyPrinter to determine
+# what classes from nz.co.trademe.api.v1 are actually used, it looks for all 
+# references to (fields, superclass, etc) other classes and prints them to
+# the console.
+#
+# @Author Tim Grunshaw
+# @Version 24.10.13
+#
+nz.co.trademe.api.v1.ListedItemDetail
+nz.co.trademe.api.v1.MemberSummary
+nz.co.trademe.api.v1.SoldItems
+nz.co.trademe.api.v1.UnsoldItems
+nz.co.trademe.api.v1.Items

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html class="no-js my-application" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" lang="en"
+      xmlns:o="http://omnifaces.org/ui">
+    <h:head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>    
+        <title>PriceOwl Auction Research</title>
+        <style>
+            body {
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+        </style>
+        <h:outputStylesheet library='default' name='css/style.min.css' />
+        <h:outputStylesheet library="default" name="css/auctionresearch.css" /> 
+        <link rel="shortcut icon" sizes="16x16 32x32 48x48 64x64" href="#{facesContext.externalContext.requestContextPath}/javax.faces.resource/img/favicon-32.png?ln=default"/>
+
+        <o:conditionalComment if="lt IE 9">
+            <script src="#{request.contextPath}/javax.faces.resource/js/vendor/respond.min.js?ln=default" />
+            <script src="#{request.contextPath}/javax.faces.resource/js/vendor/html5shiv.js?ln=default" />        
+        </o:conditionalComment>          
+    </h:head>   
+    <h:body>
+        <div class="vingnette"></div>
+        <!-- wrap needed to push footer down -->
+        <div class="wrap">
+            <div class="container"> 
+                <div class="header">
+                    <ul class="nav">
+                        <li><a href="index.xhtml">Home</a></li>
+                        <li class="active"><a href="auctionresearch.xhtml">Demo</a></li>
+                        <li><a href="survey.xhtml">Survey</a></li>
+                    </ul>
+                    <a href="index.xhtml"><h3><h:graphicImage styleClass='logo' library="default" name='img/priceOwlFont.png'/>
+                            <h:graphicImage styleClass='owl' library="default" name="img/owl.png" /></h3></a>
+
+                </div>
+
+                <div class="row">
+                    <h1 class="cover-heading">Bought or Sold an iPhone, PS3 or Nike Free Runs?</h1>
+					<h:form id="form" class="search" onsubmit="_gaq.push(['_trackEvent', 'form', 'valuationSearch', document.getElementById('form:auctionInput').value]);
+							console.log(document.getElementById('form:auctionInput').value)">
+                        <div class="input-group">
+                            <h:inputText id="auctionInput" styleClass="form-control" pt:placeholder="Enter the auction number or auction URL" value="#{auctionResearcher.auctionNoOrUrl}"/>
+                            <span class="input-group-btn">
+                                <h:commandButton styleClass="btn btn-default" action="#{auctionResearcher.compare(true)}" value="Bought" title="Bought" />
+								<h:commandButton styleClass="btn btn-default" action="#{auctionResearcher.compare(false)}" value="Sold" title="Sold" />
+                            </span>
+
+                        </div>
+                        <div id="messages" class="messages">
+                            <h:messages styleClass="alert alert-warning info-message" />
+                        </div>
+                    </h:form>
+
+                    <h:panelGroup rendered="#{auctionResearcher.searchComplete}" layout="block" styleClass="result" >
+                        <div class="image-frame">
+                            <h:graphicImage styleClass="auction-photo img-rounded" value="http://images.trademe.co.nz/photoserver/large/#{auctionResearcher.searchedAuction.photoId}.jpg"/>
+                        </div>
+                        <div class="summary panel panel-default" title="#{auctionResearcher.stats.sufficientData ?  'The average price over the last 45 days is '.concat(auctionResearcher.formattedValue) : ''}">
+                            <div class="panel-heading">
+                                <h:outputText styleClass="valuatorAuctionTitle" value="#{auctionResearcher.searchedAuction.title}" />
+                            </div>
+							<ui:param name="explain-string" value="" />
+                            <div class="expected-value-group panel-body" > 
+								<script>
+								</script>
+								<h:panelGroup rendered="#{auctionResearcher.stats.sufficientData}">
+								  <h:panelGroup class="expected-value-label lost-money" rendered="#{!auctionResearcher.wasSold}">Estimated price:</h:panelGroup>
+                                    <h:panelGroup class="expected-value-label gained-money" rendered="#{auctionResearcher.isBuyer and auctionResearcher.isNegative}">Ouch! You overspent by:</h:panelGroup>
+                                    <h:panelGroup class="expected-value-label gained-money" rendered="#{auctionResearcher.isBuyer and  !auctionResearcher.isNegative}">Nice! You saved:</h:panelGroup>
+                                    <h:panelGroup class="expected-value-label lost-money" rendered="#{!auctionResearcher.isBuyer and auctionResearcher.isNegative}">Ouch! You under sold by:</h:panelGroup> 
+                                    <h:panelGroup class="expected-value-label gained-money" rendered="#{!auctionResearcher.isBuyer and  !auctionResearcher.isNegative}">Nice! Sold for more than the average by:</h:panelGroup>
+									<h:panelGroup class="expected-value-label" rendered="#{auctionResearcher.priceDifference == 0}">The price matches the average</h:panelGroup>
+                                    <h:outputText styleClass="expected-value" rendered="#{auctionResearcher.priceDifference != 0}" value="#{auctionResearcher.priceDifference}">
+                                        <f:convertNumber type="currency" currencySymbol="$" />
+                                    </h:outputText>
+                                    <h:outputText value="#{auctionResearcher.stats.accuracy} accuracy" styleClass="label accuracy #{auctionResearcher.stats.accuracy}-accuracy" />                                    
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{!auctionResearcher.stats.sufficientData}">
+									<h:form id="examples">
+                                    <p class="insufficient-message text-danger">Sorry, there were too few similar auctions to produce an accurate valuation. 
+                                        We are in beta and are actively looking to improve the number of auctions we use. Check out some of these examples:
+<!--										<h:inputHidden class="example-input"  value="#{auctionResearcher.auctionNoOrUrl}" />
+										<h:commandLink styleClass="example-search1" action="#{auctionResearcher.calculate()}" />
+										<h:commandLink styleClass="example-search2" action="#{auctionResearcher.calculate()}" />
+										<h:commandLink styleClass="example-search3" action="#{auctionResearcher.calculate()}" />-->
+									</p>
+									</h:form>
+                                </h:panelGroup>
+                            </div>
+                        </div>
+
+                        <h:panelGroup layout="block" class="similar-auctions panel panel-default" rendered="#{!empty auctionResearcher.stats.mostRelevantSoldAuctions}">
+                            <div class="panel-heading">
+                                Similar Sold Auctions
+                            </div>
+                            <ul class="list-group">
+                                <ui:repeat value="#{auctionResearcher.stats.mostRelevantSoldAuctions}" var="listing" >
+                                    <li class="list-group-item">
+                                        <h:outputLink value="http://www.trademe.co.nz/#{listing.listingId}" target="_blank">#{listing.title}</h:outputLink>
+                                    </li>
+                                </ui:repeat>
+                            </ul>
+                        </h:panelGroup>
+
+                        <h:panelGroup layout="block" styleClass="similar-auctions panel panel-default" rendered="#{!auctionResearcher.stats.sufficientData and !empty auctionResearcher.stats.mostRelevantUnsoldAuctions}">
+                            <div class="panel-heading">
+                                Similar Unsold Auctions
+                            </div>
+                            <ul class="list-group">
+                                <ui:repeat value="#{auctionResearcher.stats.mostRelevantUnsoldAuctions}" var="listing" >
+                                    <li class="list-group-item">
+                                        <h:outputLink value="http://www.trademe.co.nz/#{listing.listingId}" target="_blank">#{listing.title}</h:outputLink>
+                                    </li>
+                                </ui:repeat>
+                            </ul>                       
+                        </h:panelGroup>
+                    </h:panelGroup>
+                    <!--            <h:panelGroup styleClass="valuatorBasedOff">
+                                                            <h:outputText value="Based off " />
+                                                            <h:outputText value="#{auctionResearcher.stats.itemStats.soldCount}" >
+                                                                <f:convertNumber maxFractionDigits="0" />
+                                                            </h:outputText>
+                                                            <h:outputText value=" sold and " />
+                                                            <h:outputText value="#{auctionResearcher.stats.itemStats.unsoldCount}" >
+                                                                <f:convertNumber maxFractionDigits="0" />
+                                                            </h:outputText>
+                                                            <h:outputText value=" unsold auctions in the last 45 days." />
+                                                        </h:panelGroup>-->
+
+                    <!-- ****************** Sold count < 5, don't show value. Do show sold auctions (if any) and unsold auctions. -->
+<!--                        <h:panelGroup rendered="#{auctionResearcher.stats.itemStats.soldCount lt 5}" styleClass="result">
+                        <h:outputText value="Sorry, there were too few similar auctions to produce an accurate valuation." />
+                        <h:outputText rendered="#{auctionResearcher.stats.itemStats.soldCount gt 0}"
+                                      value="However, here are links to the few auctions that did sell:" />
+                        <h:panelGroup styleClass="valuatorRelevantAuctions">
+                            <ui:repeat value="#{auctionResearcher.stats.mostRelevantSoldAuctions}" var="listing">
+                                <h:outputLink value="http://www.trademe.co.nz/#{listing.listingId}" target="_blank">#{listing.title}</h:outputLink>
+                            </ui:repeat>
+                            <h:outputText rendered="#{auctionResearcher.stats.itemStats.soldCount == 0 and valuator.stats.itemStats.unsoldCount gt 0}"
+                                          value="However, here are links to some similar unsold auctions" />
+                            <h:outputText rendered="#{auctionResearcher.stats.itemStats.soldCount gt 0}"
+                                          value="And here are links to similar auctions that didn't sell" />
+                            <h:outputText rendered="#{auctionResearcher.stats.itemStats.totalCount == 0}" 
+                                          value="No prior auctions were matched." />
+                            <ui:repeat value="#{auctionResearcher.stats.mostRelevantUnsoldAuctions}" var="listing">
+                                <h:outputLink value="http://www.trademe.co.nz/#{listing.listingId}" target="_blank">#{listing.title}</h:outputLink>
+                            </ui:repeat>
+                        </h:panelGroup>
+                    </h:panelGroup>-->
+
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Enquiries are welcome: <a href="mailto:info@priceowl.co.nz">info@priceowl.co.nz</a> | 
+				<a href="legaldisclaimer.xhtml">Legal Disclaimer</a></p>							
+        </div>
+
+
+
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+        <script>
+						//<![CDATA[
+						window.jQuery || document.write('&lt;script src="#{request.contextPath}/javax.faces.resource/js/vendor/jquery-1.10.1.min.js?ln=default"&gt;&lt;\/script&gt;')
+						//]]>
+        </script>
+
+
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+        <script>
+						//<![CDATA[
+						$.fn.modal ||
+								document.write('<script src="#{request.contextPath}/javax.faces.resource/js/vendor/bootstrap.min.js?ln=default">\x3C/script>') &&
+								document.write('<script src="#{request.contextPath}/javax.faces.resource/js/vendor/bootstrap.min.js?ln=default">\x3C/script>');
+						//]]>
+        </script>	
+
+
+        <!--        <outputScript library='default' name='js/script.min.js'/>-->
+
+        <script>
+			//<![CDATA[
+			(function(i, s, o, g, r, a, m) {
+				i['GoogleAnalyticsObject'] = r;
+				i[r] = i[r] || function() {
+					(i[r].q = i[r].q || []).push(arguments)
+				}, i[r].l = 1 * new Date();
+				a = s.createElement(o),
+						m = s.getElementsByTagName(o)[0];
+				a.async = 1;
+				a.src = g;
+				m.parentNode.insertBefore(a, m)
+			})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+			ga('create', 'UA-47034248-2', 'priceowl.co.nz');
+			ga('send', 'pageview');
+			//]]>
+
+			$('#form input[type="submit"]').click(function() {
+				ga('send', 'event', 'button', 'search', $('#form input[type="text"]').text());
+			});
+
+			if($('.insufficient-message').length > 0) {
+				ga('send', 'event', 'outcome', 'search result', 'failed for' + $('#form input[type="text"]').text());
+			}
+        </script>
+    </h:body>
+</html>

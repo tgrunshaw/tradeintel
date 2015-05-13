@@ -1,0 +1,79 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 10/02/2014, 4:18:38 PM
+    Author     : Kevin
+*/
+
+
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+
+.masthead p {
+    font-size: 16pt;
+}
+
+.lead {
+	margin-bottom: 2em;
+}
+
+.owl {
+	height: 11em;
+}
+
+.masthead .name-and-logo h3 {
+	display: inline-block;
+}
+
+
+@media (min-width: 768px) {
+  .masthead-brand {
+    float: none;
+  }
+}
+
+.logo {
+    height: 2.5em;
+}
+
+.cover-heading .logo {
+	height: 2em;
+}
+/* To account for the increased margin in .demo-explain. inner-cover's mmargin
+moves the center block more towards the middle again.*/
+.inner-cover {
+	margin-top: 5em;
+}
+
+.demo-explain {
+	margin-top: 3em;
+	margin-bottom: 1.5em;
+    font-size: 14pt;
+    color: #333;
+	text-shadow: none;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+
+}
+
+p {
+    font-family: "Palatino Linotype","Book Antiqua",Palatino,serif
+}
+
+.terms{
+    text-align: left;
+    font-size: 110%;
+}
+
+
+
+
+
+
+
+

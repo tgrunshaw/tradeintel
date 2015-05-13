@@ -1,0 +1,140 @@
+<dataConfig>
+	<dataSource batchSize="500" type="JdbcDataSource" driver="com.mysql.jdbc.Driver" url="jdbc:mysql://192.168.1.4/tradeintel" user="root" password="toor"/>
+<document>
+	<entity name="listeditemdetail" pk="LISTINGID" query="SELECT * FROM listeditemdetail">
+                <entity name="member" pk="MEMBERID" query="SELECT * FROM member WHERE MEMBERID='${listeditemdetail.MEMBER_MEMBERID}'">
+                    <field column="MEMBERID" name="Member_MemberId" />
+                    <field column="NICKNAME" name="Member_Nickname" />
+                    <field column="UNIQUEPOSITIVE" name="Member_UniquePositive" />
+                    <field column="UNIQUENEGATIVE" name="Member_UniqueNegative" />
+                    <field column="FEEDBACKCOUNT"  name="Member_FeedbackCount" />
+                    <field column="ISADDRESSVERIFIED" name="Member_IsAddressVerified" />
+                    <field column="ISAUTHENTICATED"   name="Member_IsAuthenticated" />
+                </entity>
+		    <entity name="questionpages" pk="ID" query="SELECT ID, TOTALCOUNT FROM questionpages WHERE ID='${listeditemdetail.QUESTIONS_ID}'">
+		        <field column="TOTALCOUNT" name="Questions_TotalCount"/>
+		        <entity name="questionpages_question" pk="QuestionPages_ID" query="SELECT list_LISTINGQUESTIONID FROM questionpages_question WHERE questionpages_question.QuestionPages_ID='${questionpages.ID}'">
+		            <entity name="question" pk="LISTINGQUESTIONID" query="SELECT * FROM question WHERE question.LISTINGQUESTIONID='${questionpages_question.list_LISTINGQUESTIONID}'">
+		                <field column="ANSWER" name="Questions_Answer" />
+		                <field column="COMMENT" name="Questions_Comment" />
+		                <field column="COMMENTDATE" name="Questions_CommentDate" />
+		                <field column="ISSELLERCOMMENT" name="Questions_IsSellerComment" />
+		                <field column="ANSWERDATE" name="Questions_AnswerDate" />
+		            </entity>
+		        </entity>
+		    </entity>
+		    
+		   <entity name="listeditemdetail_shippingoption" pk="ListedItemDetail_LISTINGID" query="SELECT shippingOptions_ID FROM listeditemdetail_shippingoption WHERE listeditemdetail_shippingoption.ListedItemDetail_LISTINGID='${listeditemdetail.LISTINGID}'">
+		        <entity name="shippingoption" pk="ID" query="SELECT * FROM shippingoption WHERE shippingoption.ID='${listeditemdetail_shippingoption.shippingOptions_ID}' ORDER BY PRICE ASC LIMIT 1">
+		            <field column="METHOD" name="ShippingOptions_Method" />
+		            <field column="PRICE"  name="ShippingOptions_Price" />
+		            <field column="TYPE"   name="ShippingOptions_Type" />
+		        </entity>
+		    </entity>
+		<entity name="listeditemdetail_attribute" pk="ListedItemDetail_LISTINGID" query="SELECT attributes_ID FROM listeditemdetail_attribute WHERE listeditemdetail_attribute.ListedItemDetail_LISTINGID='${listeditemdetail.LISTINGID}'">
+		    <entity name="attribute"  pk="ID" query="SELECT * FROM attribute WHERE attribute.ID='${listeditemdetail_attribute.attributes_ID}'">
+		        <field column="NAME" name="Attributes_Name" />
+		        <field column="VALUE" name="Attributes_Value" />
+		        <field column="TYPE"  name="Attributes_Type" />
+		        <field column="DISPLAYNAME" name="Attributes_DisplayName" />
+		    </entity>
+		</entity>
+	</entity>
+</document>
+</dataConfig>
+
+
+<!--	<entity name="Item" pk="LISTINGID" query="SELECT * FROM Item">
+	    <entity name="ListedItemDetail" pk="LISTINGID" query="SELECT * FROM ListedItemDetail WHERE LISTINGID='${Item.LISTINGID}'">
+		    <entity name="member" pk="MemberId" query="SELECT * FROM Member WHERE MemberId='${ListedItemDetail.MEMBER_MEMBERID}'">
+		        <field column="MEMBERID" name="Member_MemberId" />
+		        <field column="NICKNAME" name="Member_Nickname" />
+		        <field column="UNIQUEPOSITIVE" name="Member_UniquePositive" />
+		        <field column="UNIQUENEGATIVE" name="Member_UniqueNegative" />
+		        <field column="FEEDBACKCOUNT"  name="Member_FeedbackCount" />
+		        <field column="ISADDRESSVERIFIED" name="Member_IsAddressVerified" />
+		        <field column="ISAUTHENTICATED"   name="Member_IsAuthenticated" />
+		    </entity>
+		    <entity name="pagedcollectionofquestionte0r55be" pk="ID" query="SELECT LIST_ID, TOTALCOUNT FROM pagedcollectionofquestionte0r55be WHERE ID='${ListedItemDetail.QUESTIONS_ID}'">
+		        <field column="TOTALCOUNT" name="Questions_TotalCount"/>
+		        <entity name="innercollectionofquestionte0r55be_question" pk="innercollectionofquestionte0r55be_ID" query="SELECT question_LISTINGQUESTIONID FROM innercollectionofquestionte0r55be_question WHERE innercollectionofquestionte0r55be_question.InnerCollectionOfQuestionte0R55Be_ID='${pagedcollectionofquestionte0r55be.LIST_ID}'">
+		            <entity name="question" pk="LISTINGQUESTIONID" query="SELECT * FROM question WHERE question.LISTINGQUESTIONID='${innercollectionofquestionte0r55be_question.question_LISTINGQUESTIONID}'">
+		                <field column="ANSWER" name="Questions_Answer" />
+		                <field column="COMMENT" name="Questions_Comment" />
+		                <field column="COMMENTDATE" name="Questions_CommentDate" />
+		                <field column="ISSELLERCOMMENT" name="Questions_IsSellerComment" />
+		                <field column="ANSWERDATE" name="Questions_AnswerDate" />
+		            </entity>
+		        </entity>
+		    </entity>
+		    
+		   <entity name="listeditemdetail_shippingoption" pk="ListedItemDetail_LISTINGID" query="SELECT shippingOption_ID FROM listeditemdetail_shippingoption WHERE listeditemdetail_shippingoption.ListedItemDetail_LISTINGID='${ListedItemDetail.LISTINGID}'">
+		        <entity name="shippingoption" pk="ID" query="SELECT * FROM shippingoption WHERE shippingoption.ID='${listeditemdetail_shippingoption.shippingOption_ID}' ORDER BY PRICE ASC LIMIT 1">
+		            <field column="METHOD" name="ShippingOptions_Method" />
+		            <field column="PRICE"  name="ShippingOptions_Price" />
+		            <field column="TYPE"   name="ShippingOptions_Type" />
+		        </entity>
+		    </entity>
+		</entity>
+		<entity name="item_attribute" pk="Item_LISTINGID" query="SELECT attribute_ID FROM item_attribute WHERE item_attribute.Item_LISTINGID='${Item.LISTINGID}'">
+		    <entity name="attribute"  pk="ID" query="SELECT * FROM attribute WHERE attribute.ID='${item_attribute.attribute_ID}'">
+		        <field column="NAME" name="Attributes_Name" />
+		        <field column="VALUE" name="Attributes_Value" />
+		        <field column="TYPE"  name="Attributes_Type" />
+		        <field column="LOWER" name="Attributes_Lower" />
+		        <field column="UPPER" name="Attributes_Upper" />
+		        <field column="DISPLAYNAME" name="Attributes_DisplayName" />
+		    </entity>
+		</entity>
+	</entity>-->
+
+
+<!--
+<dataConfig>
+	<dataSource batchSize="-1" type="JdbcDataSource" driver="com.mysql.jdbc.Driver" url="jdbc:mysql://192.168.1.4/tradeintel" user="root" password="toor"/>
+<document>
+	
+	
+	<entity name="ListedItemDetail" pk="LISTINGID" query="SELECT * FROM ListedItemDetail inner join Item on item.LISTINGID=ListedItemDetail.LISTINGID WHERE Item.LISTINGID=527499620">
+		    <entity name="member" pk="MemberId" query="SELECT * FROM Member WHERE MemberId='${ListedItemDetail.MEMBER_MEMBERID}'">
+		        <field column="MEMBERID" name="Member_MemberId" />
+		        <field column="NICKNAME" name="Member_Nickname" />
+		        <field column="UNIQUEPOSITIVE" name="Member_UniquePositive" />
+		        <field column="UNIQUENEGATIVE" name="Member_UniqueNegative" />
+		        <field column="FEEDBACKCOUNT"  name="Member_FeedbackCount" />
+		        <field column="ISADDRESSVERIFIED" name="Member_IsAddressVerified" />
+		        <field column="ISAUTHENTICATED"   name="Member_IsAuthenticated" />
+		    </entity>
+		    <entity name="pagedcollectionofquestionte0r55be" pk="ID" query="SELECT LIST_ID, TOTALCOUNT FROM pagedcollectionofquestionte0r55be WHERE ID='${ListedItemDetail.QUESTIONS_ID}'">
+		        <field column="TOTALCOUNT" name="Questions_TotalCount"/>
+		        <entity name="innercollectionofquestionte0r55be_question" pk="innercollectionofquestionte0r55be_ID" query="SELECT question_LISTINGQUESTIONID FROM innercollectionofquestionte0r55be_question WHERE innercollectionofquestionte0r55be_question.InnerCollectionOfQuestionte0R55Be_ID='${pagedcollectionofquestionte0r55be.LIST_ID}'">
+		            <entity name="question" pk="LISTINGQUESTIONID" query="SELECT * FROM question WHERE question.LISTINGQUESTIONID='${innercollectionofquestionte0r55be_question.question_LISTINGQUESTIONID}'">
+		                <field column="ANSWER" name="Questions_Answer" />
+		                <field column="COMMENT" name="Questions_Comment" />
+		                <field column="COMMENTDATE" name="Questions_CommentDate" />
+		                <field column="ISSELLERCOMMENT" name="Questions_IsSellerComment" />
+		                <field column="ANSWERDATE" name="Questions_AnswerDate" />
+		            </entity>
+		        </entity>
+		    </entity>
+		    
+		   <entity name="listeditemdetail_shippingoption" pk="ListedItemDetail_LISTINGID" query="SELECT shippingOption_ID FROM listeditemdetail_shippingoption WHERE listeditemdetail_shippingoption.ListedItemDetail_LISTINGID='${ListedItemDetail.LISTINGID}'">
+		        <entity name="shippingoption" pk="ID" query="SELECT * FROM shippingoption WHERE shippingoption.ID='${listeditemdetail_shippingoption.shippingOption_ID}' ORDER BY PRICE ASC LIMIT 1">
+		            <field column="METHOD" name="ShippingOptions_Method" />
+		            <field column="PRICE"  name="ShippingOptions_Price" />
+		            <field column="TYPE"   name="ShippingOptions_Type" />
+		        </entity>
+		    </entity>
+		</entity>
+		<entity name="item_attribute" pk="Item_LISTINGID" query="SELECT attribute_ID FROM item_attribute WHERE item_attribute.Item_LISTINGID='${ListedItemDetail.LISTINGID}'">
+		    <entity name="attribute"  pk="ID" query="SELECT * FROM attribute WHERE attribute.ID='${item_attribute.attribute_ID}'">
+		        <field column="NAME" name="Attributes_Name" />
+		        <field column="VALUE" name="Attributes_Value" />
+		        <field column="TYPE"  name="Attributes_Type" />
+		        <field column="LOWER" name="Attributes_Lower" />
+		        <field column="UPPER" name="Attributes_Upper" />
+		        <field column="DISPLAYNAME" name="Attributes_DisplayName" />
+		    </entity>
+	</entity>
+</document>
+</dataConfig>-->

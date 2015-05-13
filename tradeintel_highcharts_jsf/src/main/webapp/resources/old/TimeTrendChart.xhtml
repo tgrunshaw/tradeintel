@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute name="title" default="" />
+        <cc:attribute name="subTitle" default=""/>
+        <cc:attribute name="xLabel" default="Date" />
+        <cc:attribute name="yLabel" default="" />
+        <cc:attribute name="model" type="nz.co.tradeintel.web.charts.highcharts.TimeChartModel" />
+
+    </cc:interface>
+
+    <cc:implementation>
+        <h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
+        <h:outputScript library="javascript/highstock/js/" name="highstock.js" target="head" />
+        
+        <div id="#{cc.id}_chartDiv"/>
+        <script type="text/javascript">
+            var data = [
+                <ui:repeat value="#{cc.attrs.model.data}" var="data">
+                    [(new Date()).setTime(#{data.dateTime.time}), #{data.value}],
+                </ui:repeat>]
+            ;
+            $(function() {
+                var chart = new Highcharts.StockChart({
+                    chart: {
+                         renderTo: '#{cc.id}_chartDiv',
+                         type: 'scatter'
+                     },
+                     title: {
+                         text: '#{cc.attrs.title}'
+                     },
+                     subtitle: {
+                         text: '#{cc.attrs.subTitle}'
+                     },
+                     xAxis: {
+                         type: 'datetime',
+                         dateTimeLabelFormats: {
+                             month: '%e. %b',
+                             year: '%b'
+                         },
+                         title: {
+                             enabled: true,
+                             text: '#{cc.attrs.xLabel}'
+                         },
+                         startOnTick: false,
+                         endOnTick: true,
+                         showLastLabel: true
+                     },
+                     yAxis: {
+                         title: {
+                             text: '#{cc.attrs.yLabel}'
+                         }
+                     },
+                     legend: {
+                         enabled: false
+                     },
+                     series: [{
+                         data: data
+                     }],
+                     plotOptions: {
+                        line: {
+                            dataGrouping: {
+                                enabled: true,
+                                forced:true,
+                                approximation: 'average',
+                                units: [[
+                                        'millisecond', // unit name
+                                        null // allowed multiples
+                                ], [
+                                        'second',
+                                        null
+                                ], [
+                                        'minute',
+                                        null
+                                ], [
+                                        'hour',
+                                        [12]
+                                ], [
+                                        'day',
+                                        null
+                                ], [
+                                        'week',
+                                        null
+                                ], [
+                                        'month',
+                                        null
+                                ], [
+                                        'year',
+                                        null
+                                ]]
+                            }
+                        }
+                     }
+                 });
+            });
+        </script>
+    </cc:implementation>
+</html>

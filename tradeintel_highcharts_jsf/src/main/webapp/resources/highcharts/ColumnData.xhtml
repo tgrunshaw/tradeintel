@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite">
+
+    <cc:interface>
+        <cc:attribute name="data" type="nz.co.kevindoran.highcharts.ColumnSeries"/>        
+        <cc:attribute name="type" default="column" />
+    </cc:interface>
+
+    <cc:implementation>
+       if(typeof chart.xAxis.categories === "undefined") {
+            chart.xAxis.categories = 
+            [<ui:repeat value="#{cc.attrs.series.columns}" var="column">
+                 '#{column.name}',
+             </ui:repeat>];
+        }
+        var data = [<ui:repeat value="#{cc.attrs.series.columns}" var="column">
+                    #{column.value},
+                    </ui:repeat>];    
+    </cc:implementation>
+</html>

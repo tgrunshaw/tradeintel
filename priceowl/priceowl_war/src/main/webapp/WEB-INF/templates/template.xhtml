@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html class="no-js my-application" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" lang="en"
+      xmlns:o="http://omnifaces.org/ui">
+    <h:head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>    
+        <title>PriceOwl</title>
+        <style>
+            body {
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+        </style>
+        <h:outputStylesheet library='default' name='css/style.min.css' />
+		<h:outputStylesheet library="default" name="css/auctionresearch.css" /> 
+        <link rel="shortcut icon" sizes="16x16 32x32 48x48 64x64" href="#{facesContext.externalContext.requestContextPath}/javax.faces.resource/img/favicon-32.png?ln=default"/>
+        <o:conditionalComment if="lt IE 9">
+            <script src="#{request.contextPath}/javax.faces.resource/js/vendor/respond.min.js?ln=default" />
+            <script src="#{request.contextPath}/javax.faces.resource/js/vendor/html5shiv.js?ln=default" />        
+        </o:conditionalComment>          
+    </h:head>   
+    <h:body>
+        <!-- wrap needed to push footer down -->
+        <div class="wrap">
+            <div class="container"> 
+                <div class="header">
+					<ui:insert name="header">
+						<ul class="nav">
+							<li class="active"><a href="index.xhtml">Home</a></li>
+							<li><a href="auctionresearch.xhtml">Demo</a></li>
+							<li><a href="survey.xhtml">Survey</a></li>
+						</ul>
+						<a href="index.xhtml"><h3><h:graphicImage styleClass='logo' library="default" name='img/priceOwlFont.png'/>
+								<h:graphicImage styleClass='owl' library="default" name="img/owl.png" /></h3></a>
+					</ui:insert>
+                </div>
+
+				<ui:insert name="content" />
+            </div>
+        </div>
+        <div class="footer">
+            <p>Enquiries are welcome: <a href="mailto:info@priceowl.co.nz">info@priceowl.co.nz</a> | 
+				<a href="legaldisclaimer.xhtml">Legal Disclaimer</a></p>							
+        </div>
+
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+        <script>
+			//<![CDATA[
+			window.jQuery || document.write('&lt;script src="#{request.contextPath}/javax.faces.resource/js/vendor/jquery-1.10.1.min.js?ln=default"&gt;&lt;\/script&gt;')
+			//]]>
+        </script>
+
+		  <script src="//code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
+
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+        <script>
+			//<![CDATA[
+			$.fn.modal ||
+					document.write('<script src="#{request.contextPath}/javax.faces.resource/js/vendor/bootstrap.min.js?ln=default">\x3C/script>') &&
+					document.write('<script src="#{request.contextPath}/javax.faces.resource/js/vendor/bootstrap.min.js?ln=default">\x3C/script>');
+			//]]>
+        </script>	
+
+
+        <!--        <outputScript library='default' name='js/script.min.js'/>-->
+		<h:outputScript library="default" name="js/main.js" />
+		<ui:insert name="scripts" />
+        <script>
+			//<![CDATA[
+			(function(i, s, o, g, r, a, m) {
+				i['GoogleAnalyticsObject'] = r;
+				i[r] = i[r] || function() {
+					(i[r].q = i[r].q || []).push(arguments)
+				}, i[r].l = 1 * new Date();
+				a = s.createElement(o),
+						m = s.getElementsByTagName(o)[0];
+				a.async = 1;
+				a.src = g;
+				m.parentNode.insertBefore(a, m)
+			})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+			ga('create', 'UA-47034248-2', 'priceowl.co.nz');
+			ga('send', 'pageview');
+			//]]>
+
+			$('#form input[type="submit"]').click(function() {
+				ga('send', 'event', 'button', 'search', $('#form input[type="text"]').text());
+			});
+
+			if ($('.insufficient-message').length > 0) {
+				ga('send', 'event', 'outcome', 'search result', 'failed for' + $('#form input[type="text"]').text());
+			}
+        </script>
+    </h:body>
+</html>
