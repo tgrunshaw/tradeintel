@@ -69,12 +69,16 @@
 <h3>
 <a id="api-request-functionality" class="anchor" href="#api-request-functionality" aria-hidden="true"><span class="octicon octicon-link"></span></a>API request functionality</h3>
 
-<p><img src="http://googledrive.com/host/0B8QP06llzL19SVoyb2dZTkJLTW8/2000px-ApiRequestArchitecture.png" alt=""></p>
+<p>Right click --&gt; open image in new tab to read the text
+<img src="http://googledrive.com/host/0B8QP06llzL19SVoyb2dZTkJLTW8/2000px-ApiRequestArchitecture.png" alt=""></p>
 
 <h3>
 <a id="python-scripts--java-reflection" class="anchor" href="#python-scripts--java-reflection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Python scripts &amp; java reflection</h3>
 
-<p>We wanted to automate the generation of java classes from the provided XML schema (on every mvn package command) so we used a python script for this [?????]. We only wanted the java classes we use (there were 1000's otherwise), to find used classes I wrote a (probably over complicated) class that cleverly used reflection to identify these classes [?????].  </p>
+<p>We wanted to automate the generation of java classes from the provided XML schema (on every mvn package command) so we used a <a href="https://github.com/tgrunshaw/tradeintel/blob/master/JAXB/scripts/copyUsedClassesAddId.py">python script</a> for this. We only wanted the java classes we use (there were 1000's otherwise), to find used classes I wrote a (probably over complicated) class that cleverly used reflection, recursion, &amp; generics to identify these classes - <a href="https://github.com/tgrunshaw/tradeintel/blob/master/JAXB/src/main/java/nz/co/tradeintel/trademe/utility/meta/ClassHierarchyPrinter.java">here</a>.  </p>
+
+<h4>
+<a id="to-seehear-more-examples-involving-testing-security-ssl-database-migration-html-5-css3-jquery-primefaces-highcharts-etc---get-in-touch-" class="anchor" href="#to-seehear-more-examples-involving-testing-security-ssl-database-migration-html-5-css3-jquery-primefaces-highcharts-etc---get-in-touch-" aria-hidden="true"><span class="octicon octicon-link"></span></a>To see/hear more examples involving testing, security, SSL, database migration, HTML 5, CSS3, Jquery, Primefaces, Highcharts, etc - get in touch! :)</h4>
         </section>
 
         <footer>
